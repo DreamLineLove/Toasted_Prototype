@@ -1,1 +1,51 @@
-# Toasted_Prototype
+# 🍞 Toasted ERP (v1.0 Prototype)
+
+**Toasted ERP** is a high-performance, role-based Enterprise Resource Planning prototype designed for the pharmaceutical industry. Built from the ground up with a focus on speed, security, and a modular "Digital Vault" aesthetic, this system handles everything from chemical formulations to supply chain logistics.
+
+---
+
+## ⚡ The 120-Minute Speedrun
+This entire frontend architecture was rebuilt from zero to a high-fidelity deployment in just **2 hours**. 
+- **0 -> 100:** Full overhaul of 10+ departmental modules.
+- **Design System:** Standardized monospaced data metrics, status-driven color palettes, and industrial iconography.
+- **Responsiveness:** Optimized for both the warehouse tablet and the executive desktop.
+
+---
+
+## 🛡️ Role-Based Modules
+
+### 🔬 Research & Development
+* **Research Search:** Query the central repository for validated assets and chemical blueprints.
+* **Formulation Vault:** High-security interface for entering precise chemical ratios with AES-256 encryption indicators.
+
+### 🏭 Production & Quality
+* **Batch Release:** A compliance-heavy dashboard for QA managers to authorize the commercial release of finished goods.
+* **Demand Forecasting:** Analytical module for calculating projected monthly requirements using monospaced data precision.
+
+### 📦 Supply Chain & Logistics
+* **Inventory Ledger:** Real-time warehouse control with stock adjustment and reserve allocation tracking.
+* **Material Procurement:** Streamlined "Supply Chain Command" for requesting raw materials.
+* **Fleet Scheduling:** Calendar-centric logistics planner for tracking shipments across destination hubs.
+
+### 💰 Commercial & Sales
+* **Sales Processing:** Transaction command center for evaluating, approving, or rejecting customer order requests.
+* **Customer Portal:** A clean "Marketplace" interface for clients to browse stock and submit procurement requests.
+
+---
+
+## 🔐 Security Features
+- **Multi-Role Authentication:** Context-aware login, registration, and password recovery.
+- **Data Masking:** Sensitive chemical payloads are automatically redacted/hidden based on user permissions.
+- **Audit Ready:** Visual cues for system-wide logging and secure environment indicators.
+
+---
+
+## 🛠️ Tech Stack
+- **Backend:** Python / Flask
+- **Frontend:** Jinja2 / Bootstrap 5 / Bootstrap Icons
+- **Design:** Custom CSS with a focus on "Glassmorphism" and industrial typography.
+
+---
+
+## 🚀 Deployment
+`python3 app.py`
