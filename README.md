@@ -12,6 +12,25 @@ This entire frontend architecture was rebuilt from zero to a high-fidelity deplo
 
 ---
 
+## 📸 Preview
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/e149166a-7f4c-48fe-9ee8-302c8ae67cde" 
+       alt="Login page" 
+       style="max-width: 700px; width: 100%; height: auto; border-radius: 8px;">
+</p>
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/7629cab8-f8a3-42d6-b8c8-a07d6bc8bf1c"
+       alt="Product manager page" 
+       style="max-width: 700px; width: 100%; height: auto; border-radius: 8px;">
+</p>
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/3ff78379-68ff-4a10-a907-f8193664738a"
+       alt="Customer page" 
+       style="max-width: 700px; width: 100%; height: auto; border-radius: 8px;">
+</p>
+
+----
+
 ## 🛡️ Role-Based Modules
 
 ### 🔬 Research & Development
@@ -46,6 +65,29 @@ This entire frontend architecture was rebuilt from zero to a high-fidelity deplo
 - **Design:** Custom CSS with a focus on "Glassmorphism" and industrial typography.
 
 ---
+## 🔑 Access & Implementation
+> **Note:** Every single page and feature for **every role** has been fully implemented.
 
-## 🚀 Deployment
-`python3 app.py`
+To explore the different departmental dashboards, select your desired role from the landing page and use the following default credentials:
+
+* **Username:** `aaaa`
+* **Password:** `aaaa`
+---
+
+## 🚀 Deployment & Demo
+**Live Demo:** [toasted-prototype.onrender.com](https://toasted-prototype.onrender.com/)
+> ⚠️ **Note:** The app may take a few minutes to start when first opened.
+
+**Local Run:**
+```bash
+python3 app.py
+```
+---
+
+## 🔑 Access & Implementation
+> **Note:** Every single page and feature for **every role** has been fully implemented.
+
+To explore the different departmental dashboards, select your desired role from the landing page and use the following default credentials:
+
+* **Username:** `aaaa`
+* **Password:** `aaaa`
