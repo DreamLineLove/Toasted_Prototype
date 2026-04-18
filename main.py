@@ -206,7 +206,6 @@ ROLE_ACTIONS = {
     ],
     "Sales Staff": [
         {"label": "Approve customer orders", "endpoint": "sales_orders"},
-        {"label": "View customer portal", "endpoint": "customer_portal"},
         {"label": "Customer chat", "endpoint": "chat"},
     ],
     "Customer": [
@@ -525,7 +524,7 @@ def sales_orders():
 
 
 @app.route("/customer_portal", methods=["GET", "POST"])
-@require_roles("Customer", "Sales Staff")
+@require_roles("Customer")
 def customer_portal():
     user = current_user()
     inventory_items = InventoryItem.query.order_by(InventoryItem.drug_name).all()
