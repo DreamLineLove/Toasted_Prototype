@@ -44,7 +44,7 @@
             <i class="bi bi-rocket-takeoff-fill h4"></i>
           </div>
           <h5 class="card-title fw-bold">{{ action.label }}</h5>
-          <p class="card-text text-muted flex-grow-1">{{ _("Execute your") }} {{ user.role.lower() }} {{ _("duties and manage ongoing tasks.") }}</p>
+          <p class="card-text text-muted flex-grow-1">{{ action.description if action.description is defined and action.description else (_("Execute your") + " " + user.role.lower() + " " + _("duties and manage ongoing tasks.")) }}</p>
           <a href="{{ url_for(action.endpoint) }}" class="btn btn-primary w-100 mt-3 rounded-pill">
             {{ _("Launch Task") }}
           </a>

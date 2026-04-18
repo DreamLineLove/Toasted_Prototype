@@ -219,9 +219,7 @@ ROLE_ACTIONS = {
         {"label": "Contact sales", "endpoint": "chat"},
     ],
     "Delivery Manager": [
-        {"label": "Schedule delivery", "endpoint": "delivery_schedule"},
-        {"label": "Reschedule delivery", "endpoint": "delivery_schedule"},
-        {"label": "Assign transport", "endpoint": "delivery_schedule"},
+        {"label": "Manage Deliveries", "endpoint": "delivery_schedule", "description": "Schedule new deliveries, reschedule existing ones, and assign transport vehicles."},
     ],
 }
 
