@@ -52,7 +52,6 @@
         </thead>
         <tbody>
           {% for req in requests %}
-          {% set inv = req.material_name | inventory_available %}
           <tr>
             <td class="ps-4">
               <div class="fw-bold text-dark">{{ req.material_name }}</div>
