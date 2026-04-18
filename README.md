@@ -1,85 +1,129 @@
 # 🍞 Toasted ERP (v2.4 Prototype)
 
-**Toasted ERP** is a high-performance, role-based Enterprise Resource Planning prototype designed for the pharmaceutical industry. Built from the ground up with a focus on speed, security, and a modular "Digital Vault" aesthetic, this system handles everything from chemical formulations to supply chain logistics.
-
----
-
-## ⚡ The 120-Minute Speedrun
-This entire frontend architecture was rebuilt from zero to a high-fidelity deployment in just **2 hours**. 
-- **0 -> 100:** Full overhaul of 10+ departmental modules.
-- **Design System:** Standardized monospaced data metrics, status-driven color palettes, and industrial iconography.
-- **Responsiveness:** Optimized for both the warehouse tablet and the executive desktop.
-- **Multi-Language Support:** Full bilingual interface supporting English and Thai (ภาษาไทย).
+**Toasted ERP** is a role-based Enterprise Resource Planning prototype for the pharmaceutical industry. It covers the full lifecycle from drug formulation research through production, quality release, logistics, and customer order fulfillment — with each role strictly scoped to its functional requirements.
 
 ---
 
 ## 📸 Preview
+
 <p align="center">
   <img src="https://github.com/user-attachments/assets/9fe1cfd0-b42d-4390-91bf-2ae8c0446966"
-       alt="Login page" 
+       alt="Login page"
        style="max-width: 700px; width: 100%; height: auto; border-radius: 8px;">
 </p>
 <p align="center">
   <img src="https://github.com/user-attachments/assets/7629cab8-f8a3-42d6-b8c8-a07d6bc8bf1c"
-       alt="Product manager page" 
+       alt="Production Manager page"
        style="max-width: 700px; width: 100%; height: auto; border-radius: 8px;">
 </p>
 <p align="center">
   <img src="https://github.com/user-attachments/assets/3ff78379-68ff-4a10-a907-f8193664738a"
-       alt="Customer page" 
+       alt="Customer page"
        style="max-width: 700px; width: 100%; height: auto; border-radius: 8px;">
 </p>
 
-----
+---
 
-## 🛡️ Role-Based Modules
+## 👥 Roles & Features
 
-### 🔬 Research & Development
-* **Research Search:** Query the central repository for validated assets and chemical blueprints.
-* **Formulation Vault:** High-security interface for entering precise chemical ratios with AES-256 encryption indicators.
+### 🔬 Researcher
+- Submit new drug formulations (AES-256 encrypted payload, duplicate name prevented)
+- View the formulation vault
+- Search formulations by name
 
-### 🏭 Production & Quality
-* **Batch Release:** A compliance-heavy dashboard for QA managers to authorize the commercial release of finished goods.
-* **Demand Forecasting:** Analytical module for calculating projected monthly requirements using monospaced data precision.
+### 📊 Production Planner
+- Demand forecasting based on monthly volume input
 
-### 📦 Supply Chain & Logistics
-* **Inventory Ledger:** Real-time warehouse control with stock adjustment and reserve allocation tracking.
-* **Material Procurement:** Streamlined "Supply Chain Command" for requesting raw materials.
-* **Fleet Scheduling:** Calendar-centric logistics planner for tracking shipments across destination hubs.
+### 🏭 Production Manager
+- Create production batches linked to a formulation
+- Request raw materials linked to a specific batch (max 100,000 units)
+- View all production batches and their status
 
-### 💰 Commercial & Sales
-* **Sales Processing:** Transaction command center for evaluating, approving, or rejecting customer order requests.
-* **Customer Portal:** A clean "Marketplace" interface for clients to browse stock and submit procurement requests.
+### 🧪 Regulatory Affairs
+- View production batches with linked formulation and material approval status
+- Release (or withhold) batches based on full batch detail
+
+### 📦 Warehouse Staff
+- Review raw material requests submitted by Production Manager
+- Approve requests (automatically deducts from inventory) or reject them
+- Manage inventory stock levels (max ±100,000 per update)
+
+### 🚚 Delivery Manager
+- Schedule deliveries linked to approved customer orders (no past dates)
+- Reschedule existing deliveries
+- Assign transport vehicles to scheduled deliveries
+
+### 🛒 Customer
+- Register with establishment details (pharmacy/hospital name, email, phone, business license)
+- Place orders from available inventory (max 100,000 units)
+- Track delivery status including scheduled date and assigned transport
+- Contact sales staff via chat
+- View and edit registration details
+
+### 💼 Sales Staff
+- View and approve or reject customer orders
+- Respond to customer chat messages
+
+---
+
+## 🔗 Connected Data Flow
+
+```
+Researcher submits Formulation
+        ↓
+Production Manager creates Batch → linked to Formulation
+        ↓
+Production Manager requests Raw Materials → linked to Batch
+        ↓
+Warehouse Staff reviews requests → Approve (deducts inventory) / Reject
+        ↓
+Regulatory Affairs reviews Batch → sees Formulation + material approval status → Release
+        ↓
+Delivery Manager schedules Delivery → picks an Approved customer order
+        ↓
+Customer tracks Delivery → sees scheduled date and transport vehicle
+```
 
 ---
 
 ## 🔐 Security Features
-- **Multi-Role Authentication:** Context-aware login, registration, and password recovery.
-- **Data Masking:** Sensitive chemical payloads are automatically redacted/hidden based on user permissions.
-- **Audit Ready:** Visual cues for system-wide logging and secure environment indicators.
+
+- **Role-Based Access Control:** Every route is protected with a `@require_roles` decorator. Roles are strictly scoped — no cross-role access.
+- **AES-256 Encryption:** Drug formulation payloads are encrypted at rest. Only Researchers can decrypt them.
+- **Audit Logging:** All significant actions (batch creation, material requests, inventory changes, order approvals, deliveries) are logged with actor, role, and timestamp.
+- **Input Validation:** Duplicate names/IDs are blocked at submission. Quantity limits enforced at both frontend and backend. Past delivery dates rejected.
+- **Multi-Role Authentication:** Separate accounts per role. Password reset requires username and role match.
 
 ---
 
 ## 🛠️ Tech Stack
-- **Backend:** Python / Flask
+
+- **Backend:** Python / Flask / SQLAlchemy / Flask-Babel
+- **Database:** SQLite (auto-migrated on startup)
 - **Frontend:** Jinja2 / Bootstrap 5 / Bootstrap Icons
-- **Design:** Custom CSS with a focus on "Glassmorphism" and industrial typography.
+- **Security:** bcrypt password hashing, AES-256-GCM encryption
+- **i18n:** English / Thai (ภาษาไทย)
 
 ---
-## 🔑 Access & Implementation
-> **Note:** Every single page and feature for **every role** has been fully implemented.
 
-To explore the different departmental dashboards, select your desired role from the landing page and use the following default credentials:
+## 🔑 Demo Access
 
-* **Username:** `aaaa`
-* **Password:** `aaaa`
+Select a role from the landing page and use:
+
+- **Username:** `aaaa`
+- **Password:** `aaaa`
+
+> Customer accounts must be registered manually as they require establishment details.
+
 ---
 
-## 🚀 Deployment & Demo
+## 🚀 Deployment
+
 **Live Demo:** [toasted-prototype.onrender.com](https://toasted-prototype.onrender.com/)
-> ⚠️ **Note:** The app may take a few minutes to start when first opened.
+> ⚠️ The app may take a few minutes to wake up on first load.
 
-**Local Run:**
+**Run locally:**
 ```bash
-python3 app.py
+pip install -r requirements.txt
+python main.py
 ```
