@@ -60,13 +60,13 @@
 <div class="container py-4 animate-fade-in">
   <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-      <h2 class="fw-bold mb-1"><i class="bi bi-folder2-open text-primary me-2"></i>Drug Formulations</h2>
-      <p class="text-muted small mb-0">Authorized access to active pharmaceutical ingredients (API) blueprints.</p>
+      <h2 class="fw-bold mb-1"><i class="bi bi-folder2-open text-primary me-2"></i>{{ _("Drug Formulations") }}</h2>
+      <p class="text-muted small mb-0">{{ _("Authorized access to active pharmaceutical ingredients (API) blueprints.") }}</p>
     </div>
     
     {% if user.role in ['Researcher', 'Production Manager'] %}
     <a class="btn btn-primary d-flex align-items-center shadow-sm px-4 rounded-pill" href="{{ url_for('create_formulation') }}">
-      <i class="bi bi-plus-lg me-2"></i> New Formulation
+      <i class="bi bi-plus-lg me-2"></i> {{ _("New Formulation") }}
     </a>
     {% endif %}
   </div>
@@ -76,11 +76,11 @@
       <table class="table table-hover table-vault mb-0">
         <thead>
           <tr>
-            <th class="ps-4">Formulation Name</th>
-            <th>Primary Author</th>
-            <th>Record Date</th>
-            <th>Security Status / Data</th>
-            <th class="text-end pe-4">Actions</th>
+            <th class="ps-4">{{ _("Formulation Name") }}</th>
+            <th>{{ _("Primary Author") }}</th>
+            <th>{{ _("Record Date") }}</th>
+            <th>{{ _("Security Status / Data") }}</th>
+            <th class="text-end pe-4">{{ _("Actions") }}</th>
           </tr>
         </thead>
         <tbody>
@@ -111,7 +111,7 @@
               </div>
               {% else %}
               <span class="restricted-label">
-                <i class="bi bi-eye-slash-fill me-1"></i> Restricted
+                <i class="bi bi-eye-slash-fill me-1"></i> {{ _("Restricted") }}
               </span>
               {% endif %}
             </td>
@@ -125,7 +125,7 @@
             <td colspan="5" class="text-center py-5">
               <div class="opacity-50">
                 <i class="bi bi-archive h1 d-block mb-3"></i>
-                <p>The vault is currently empty.</p>
+                <p>{{ _("The vault is currently empty.") }}</p>
               </div>
             </td>
           </tr>
@@ -137,7 +137,7 @@
 
   <div class="mt-4">
     <a class="btn btn-link text-decoration-none text-muted p-0" href="{{ url_for('home') }}">
-      <i class="bi bi-arrow-left me-1"></i> Back to Dashboard
+      <i class="bi bi-arrow-left me-1"></i> {{ _("Back to Dashboard") }}
     </a>
   </div>
 </div>

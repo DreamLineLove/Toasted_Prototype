@@ -30,8 +30,8 @@
       </div>
     </div>
     <div class="col">
-      <h1 class="h2 fw-bold mb-0">Welcome back, <span class="gradient-text">{{ user.username }}</span></h1>
-      <p class="text-muted mb-0">Logged in as <span class="badge bg-light text-primary border">{{ user.role }}</span></p>
+      <h1 class="h2 fw-bold mb-0">{{ _("Welcome back,") }} <span class="gradient-text">{{ user.username }}</span></h1>
+      <p class="text-muted mb-0">{{ _("Logged in as") }} <span class="badge bg-light text-primary border">{{ user.role }}</span></p>
     </div>
   </div>
 
@@ -44,9 +44,9 @@
             <i class="bi bi-rocket-takeoff-fill h4"></i>
           </div>
           <h5 class="card-title fw-bold">{{ action.label }}</h5>
-          <p class="card-text text-muted flex-grow-1">Execute your {{ user.role.lower() }} duties and manage ongoing tasks.</p>
+          <p class="card-text text-muted flex-grow-1">{{ _("Execute your") }} {{ user.role.lower() }} {{ _("duties and manage ongoing tasks.") }}</p>
           <a href="{{ url_for(action.endpoint) }}" class="btn btn-primary w-100 mt-3 rounded-pill">
-            Launch Task
+            {{ _("Launch Task") }}
           </a>
         </div>
       </div>
@@ -56,8 +56,8 @@
 
   {% else %}
   <div class="text-center mb-5">
-    <h1 class="display-5 fw-bold">Portal Access</h1>
-    <p class="text-muted mx-auto" style="max-width: 500px;">Please select your role below to access the management dashboard or register for a new account.</p>
+    <h1 class="display-5 fw-bold">{{ _("Portal Access") }}</h1>
+    <p class="text-muted mx-auto" style="max-width: 500px;">{{ _("Please select your role below to access the management dashboard or register for a new account.") }}</p>
   </div>
 
   <div class="row g-4 justify-content-center">
@@ -68,12 +68,12 @@
           <div class="mb-3 py-3 bg-light rounded-3">
              <span class="h5 mb-0 d-block">{{ role }}</span>
           </div>
-          <p class="small text-muted mb-4">Dedicated access for authorized {{ role.lower() }} members.</p>
+          <p class="small text-muted mb-4">{{ _("Dedicated access for authorized") }} {{ role.lower() }} {{ _("members.") }}</p>
           
           <div class="d-grid gap-2">
-            <a href="{{ url_for('login', role=role) }}" class="btn btn-outline-dark btn-sm rounded-pill">Sign In</a>
+            <a href="{{ url_for('login', role=role) }}" class="btn btn-outline-dark btn-sm rounded-pill">{{ _("Sign In") }}</a>
             {% if role == 'Customer' %}
-            <a href="{{ url_for('register', role=role) }}" class="btn btn-primary btn-sm rounded-pill">Create Account</a>
+            <a href="{{ url_for('register', role=role) }}" class="btn btn-primary btn-sm rounded-pill">{{ _("Create Account") }}</a>
             {% endif %}
           </div>
         </div>

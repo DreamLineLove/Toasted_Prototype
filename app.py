@@ -5,14 +5,24 @@ import sqlite3
 
 from bcrypt import hashpw, gensalt, checkpw
 from cryptography.hazmat.primitives.ciphers.aead import AESGCM
-from flask import Flask, flash, redirect, render_template, request, session, url_for
+from flask import Flask, flash, redirect, render_template, request, session, url_for, g
 from flask_sqlalchemy import SQLAlchemy
+from flask_babel import Babel, gettext as _
+
+def get_locale():
+    # Check if language is set in session, otherwise use default
+    return session.get('lang', 'en')
 
 app = Flask(__name__)
 os.makedirs(app.instance_path, exist_ok=True)
 app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "prototype-secret-key")
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + os.path.join(app.instance_path, "app.db")
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+app.config["BABEL_DEFAULT_LOCALE"] = "en"
+app.config["BABEL_SUPPORTED_LOCALES"] = ["en", "th"]
+app.config["BABEL_TRANSLATION_DIRECTORIES"] = os.path.join(os.path.dirname(__file__), "translations")
+
+babel = Babel(app, locale_selector=get_locale)
 
 db = SQLAlchemy(app)
 
@@ -197,6 +207,12 @@ ROLE_ACTIONS = {
         {"label": "Reschedule transport", "endpoint": "delivery_schedule"},
     ],
 }
+
+@app.route("/set_language/<lang>")
+def set_language(lang):
+    if lang in ["en", "th"]:
+        session['lang'] = lang
+    return redirect(request.referrer or url_for('home'))
 
 @app.route("/")
 def home():

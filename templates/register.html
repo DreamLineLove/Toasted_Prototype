@@ -73,8 +73,8 @@
       
       <div class="register-header">
         <i class="bi bi-person-plus-fill h1 mb-2"></i>
-        <h2 class="fw-bold mb-0">Join Toasted ERP</h2>
-        <p class="opacity-75 mb-0">Create your enterprise identity</p>
+        <h2 class="fw-bold mb-0">{{ _("Join Toasted ERP") }}</h2>
+        <p class="opacity-75 mb-0">{{ _("Create your enterprise identity") }}</p>
       </div>
 
       <div class="card-body p-4 p-md-5">
@@ -85,14 +85,14 @@
             <i class="bi bi-patch-check-fill"></i>
           </div>
           <div>
-            <small class="text-muted text-uppercase fw-bold" style="font-size: 0.65rem;">Provisioning Account For</small>
+            <small class="text-muted text-uppercase fw-bold" style="font-size: 0.65rem;">{{ _("Provisioning Account For") }}</small>
             <div class="fw-bold text-dark h5 mb-0">{{ selected_role }}</div>
           </div>
         </div>
         {% else %}
         <div class="alert alert-secondary border-0 d-flex align-items-center mb-4 py-3">
           <i class="bi bi-info-circle-fill me-3 h5 mb-0"></i>
-          <span class="small">Standard registration enabled. Please select your organizational department below.</span>
+          <span class="small">{{ _("Standard registration enabled. Please select your organizational department below.") }}</span>
         </div>
         {% endif %}
 
@@ -103,29 +103,29 @@
 
           <div class="form-floating mb-3">
             <input type="text" class="form-control" id="regUsername" name="username" placeholder="Username" required>
-            <label for="regUsername"><i class="bi bi-person me-2"></i>Choose Username</label>
+            <label for="regUsername"><i class="bi bi-person me-2"></i>{{ _("Choose Username") }}</label>
           </div>
 
           <div class="form-floating mb-3">
             <input type="password" class="form-control" id="regPassword" name="password" placeholder="Password" required>
-            <label for="regPassword"><i class="bi bi-shield-lock me-2"></i>Secure Password</label>
+            <label for="regPassword"><i class="bi bi-shield-lock me-2"></i>{{ _("Secure Password") }}</label>
           </div>
 
           {% if not selected_role %}
           <div class="mb-4">
-            <label class="form-label small fw-bold text-muted text-uppercase mb-2">Assigned Department</label>
+            <label class="form-label small fw-bold text-muted text-uppercase mb-2">{{ _("Assigned Department") }}</label>
             <div class="input-group">
               <span class="input-group-text bg-white"><i class="bi bi-briefcase text-muted"></i></span>
               <select class="form-select py-3" name="role" required style="border-left: none;">
-                <option value="" disabled selected>Select your role...</option>
-                <option value="Researcher">Researcher</option>
-                <option value="Production Planner">Production Planner</option>
-                <option value="Production Manager">Production Manager</option>
-                <option value="Regulatory Affairs">Regulatory Affairs</option>
-                <option value="Warehouse Staff">Warehouse Staff</option>
-                <option value="Sales Staff">Sales Staff</option>
-                <option value="Customer">Customer</option>
-                <option value="Delivery Manager">Delivery Manager</option>
+                <option value="" disabled selected>{{ _("Select your role...") }}</option>
+                <option value="Researcher">{{ _("Researcher") }}</option>
+                <option value="Production Planner">{{ _("Production Planner") }}</option>
+                <option value="Production Manager">{{ _("Production Manager") }}</option>
+                <option value="Regulatory Affairs">{{ _("Regulatory Affairs") }}</option>
+                <option value="Warehouse Staff">{{ _("Warehouse Staff") }}</option>
+                <option value="Sales Staff">{{ _("Sales Staff") }}</option>
+                <option value="Customer">{{ _("Customer") }}</option>
+                <option value="Delivery Manager">{{ _("Delivery Manager") }}</option>
               </select>
             </div>
           </div>
@@ -133,12 +133,12 @@
 
           <div class="d-grid gap-3 pt-2">
             <button class="btn btn-primary btn-register shadow-sm">
-              Initialize Account <i class="bi bi-arrow-right ms-2"></i>
+              {{ _("Initialize Account") }} <i class="bi bi-arrow-right ms-2"></i>
             </button>
             
             <div class="text-center">
               <a href="{{ url_for('home') }}" class="back-link">
-                <i class="bi bi-chevron-left small"></i> Return to landing page
+                <i class="bi bi-chevron-left small"></i> {{ _("Return to landing page") }}
               </a>
             </div>
           </div>
@@ -149,7 +149,7 @@
     <div class="text-center mt-4">
       <div class="text-muted small">
         <i class="bi bi-shield-shaded me-1"></i> 
-        Encryption standards compliant with Pharma-IT protocols.
+        {{ _("Encryption standards compliant with Pharma-IT protocols.") }}
       </div>
     </div>
   </div>

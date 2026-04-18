@@ -1,4 +1,4 @@
-# 🍞 Toasted ERP (v1.0 Prototype)
+# 🍞 Toasted ERP (v2.4 Prototype)
 
 **Toasted ERP** is a high-performance, role-based Enterprise Resource Planning prototype designed for the pharmaceutical industry. Built from the ground up with a focus on speed, security, and a modular "Digital Vault" aesthetic, this system handles everything from chemical formulations to supply chain logistics.
 
@@ -9,6 +9,7 @@ This entire frontend architecture was rebuilt from zero to a high-fidelity deplo
 - **0 -> 100:** Full overhaul of 10+ departmental modules.
 - **Design System:** Standardized monospaced data metrics, status-driven color palettes, and industrial iconography.
 - **Responsiveness:** Optimized for both the warehouse tablet and the executive desktop.
+- **Multi-Language Support:** Full bilingual interface supporting English and Thai (ภาษาไทย).
 
 ---
 

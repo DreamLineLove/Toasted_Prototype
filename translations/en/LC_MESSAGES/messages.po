@@ -1,0 +1,280 @@
+# English translations for PROJECT.
+# Copyright (C) 2026 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2026-04-18 02:36+0000\n"
+"PO-Revision-Date: 2026-04-18 02:34+0000\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: en\n"
+"Language-Team: en <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: templates/base.html:98
+msgid "Formulations"
+msgstr "Formulations"
+
+#: templates/base.html:106
+msgid "Inventory"
+msgstr "Inventory"
+
+#: templates/base.html:114
+msgid "Audit Trail"
+msgstr "Audit Trail"
+
+#: templates/base.html:140
+msgid "English"
+msgstr "English"
+
+#: templates/base.html:141
+msgid "Thai"
+msgstr "Thai"
+
+#: templates/login.html:32
+msgid "Portal Login"
+msgstr "Portal Login"
+
+#: templates/login.html:33
+msgid "Enter your credentials to access the ERP"
+msgstr "Enter your credentials to access the ERP"
+
+#: templates/login.html:42
+msgid "Active Role"
+msgstr "Active Role"
+
+#: templates/login.html:49
+msgid "Please select a role from the home page first."
+msgstr "Please select a role from the home page first."
+
+#: templates/login.html:58
+msgid "Username"
+msgstr "Username"
+
+#: templates/login.html:62
+msgid "Password"
+msgstr "Password"
+
+#: templates/login.html:67
+msgid "Sign In"
+msgstr "Sign In"
+
+#: templates/login.html:73
+msgid "Landing Page"
+msgstr "Landing Page"
+
+#: templates/login.html:78
+msgid "Forgot password?"
+msgstr "Forgot password?"
+
+#: templates/login.html:87
+msgid "Secure Session Monitoring is Active."
+msgstr "Secure Session Monitoring is Active."
+
+#: templates/register.html:44
+msgid "Join Toasted ERP"
+msgstr "Join Toasted ERP"
+
+#: templates/register.html:45
+msgid "Create your enterprise identity"
+msgstr "Create your enterprise identity"
+
+#: templates/register.html:54
+msgid "Provisioning Account For"
+msgstr "Provisioning Account For"
+
+#: templates/register.html:61
+msgid "Standard registration enabled. Please select your organizational department below."
+msgstr "Standard registration enabled. Please select your organizational department below."
+
+#: templates/register.html:70
+msgid "Choose Username"
+msgstr "Choose Username"
+
+#: templates/register.html:75
+msgid "Secure Password"
+msgstr "Secure Password"
+
+#: templates/register.html:80
+msgid "Assigned Department"
+msgstr "Assigned Department"
+
+#: templates/register.html:84
+msgid "Select your role..."
+msgstr "Select your role..."
+
+#: templates/register.html:86
+msgid "Researcher"
+msgstr "Researcher"
+
+#: templates/register.html:87
+msgid "Production Planner"
+msgstr "Production Planner"
+
+#: templates/register.html:88
+msgid "Production Manager"
+msgstr "Production Manager"
+
+#: templates/register.html:89
+msgid "Regulatory Affairs"
+msgstr "Regulatory Affairs"
+
+#: templates/register.html:90
+msgid "Warehouse Staff"
+msgstr "Warehouse Staff"
+
+#: templates/register.html:91
+msgid "Sales Staff"
+msgstr "Sales Staff"
+
+#: templates/register.html:92
+msgid "Customer"
+msgstr "Customer"
+
+#: templates/register.html:93
+msgid "Delivery Manager"
+msgstr "Delivery Manager"
+
+#: templates/register.html:99
+msgid "Initialize Account"
+msgstr "Initialize Account"
+
+#: templates/register.html:104
+msgid "Return to landing page"
+msgstr "Return to landing page"
+
+#: templates/register.html:112
+msgid "Encryption standards compliant with Pharma-IT protocols."
+msgstr "Encryption standards compliant with Pharma-IT protocols."
+
+#: templates/dashboard.html:25
+msgid "Welcome back,"
+msgstr "Welcome back,"
+
+#: templates/dashboard.html:26
+msgid "Logged in as"
+msgstr "Logged in as"
+
+#: templates/dashboard.html:35
+msgid "Execute your"
+msgstr "Execute your"
+
+#: templates/dashboard.html:35
+msgid "duties and manage ongoing tasks."
+msgstr "duties and manage ongoing tasks."
+
+#: templates/dashboard.html:37
+msgid "Launch Task"
+msgstr "Launch Task"
+
+#: templates/dashboard.html:45
+msgid "Portal Access"
+msgstr "Portal Access"
+
+#: templates/dashboard.html:46
+msgid "Please select your role below to access the management dashboard or register for a new account."
+msgstr "Please select your role below to access the management dashboard or register for a new account."
+
+#: templates/dashboard.html:55
+msgid "Dedicated access for authorized"
+msgstr "Dedicated access for authorized"
+
+#: templates/dashboard.html:55
+msgid "members."
+msgstr "members."
+
+#: templates/dashboard.html:58
+msgid "Sign In"
+msgstr "Sign In"
+
+#: templates/dashboard.html:60
+msgid "Create Account"
+msgstr "Create Account"
+
+#: templates/reset_password.html:44
+msgid "Account Recovery"
+msgstr "Account Recovery"
+
+#: templates/reset_password.html:45
+msgid "Reset your credentials for the ERP system"
+msgstr "Reset your credentials for the ERP system"
+
+#: templates/reset_password.html:54
+msgid "System Role"
+msgstr "System Role"
+
+#: templates/reset_password.html:61
+msgid "Account context missing. Please return to the portal home."
+msgstr "Account context missing. Please return to the portal home."
+
+#: templates/reset_password.html:70
+msgid "New Password"
+msgstr "New Password"
+
+#: templates/reset_password.html:74
+msgid "Must follow organization security complexity standards."
+msgstr "Must follow organization security complexity standards."
+
+#: templates/reset_password.html:79
+msgid "Update Credentials"
+msgstr "Update Credentials"
+
+#: templates/reset_password.html:84
+msgid "Cancel and Return"
+msgstr "Cancel and Return"
+
+#: templates/reset_password.html:92
+msgid "End-to-End Encrypted Session"
+msgstr "End-to-End Encrypted Session"
+
+#: templates/formulations.html:32
+msgid "Drug Formulations"
+msgstr "Drug Formulations"
+
+#: templates/formulations.html:33
+msgid "Authorized access to active pharmaceutical ingredients (API) blueprints."
+msgstr "Authorized access to active pharmaceutical ingredients (API) blueprints."
+
+#: templates/formulations.html:38
+msgid "New Formulation"
+msgstr "New Formulation"
+
+#: templates/formulations.html:46
+msgid "Formulation Name"
+msgstr "Formulation Name"
+
+#: templates/formulations.html:47
+msgid "Primary Author"
+msgstr "Primary Author"
+
+#: templates/formulations.html:48
+msgid "Record Date"
+msgstr "Record Date"
+
+#: templates/formulations.html:49
+msgid "Security Status / Data"
+msgstr "Security Status / Data"
+
+#: templates/formulations.html:50
+msgid "Actions"
+msgstr "Actions"
+
+#: templates/formulations.html:70
+msgid "Restricted"
+msgstr "Restricted"
+
+#: templates/formulations.html:78
+msgid "The vault is currently empty."
+msgstr "The vault is currently empty."
+
+#: templates/formulations.html:87
+msgid "Back to Dashboard"
+msgstr "Back to Dashboard"
+

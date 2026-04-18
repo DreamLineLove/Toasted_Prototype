@@ -59,8 +59,8 @@
           <div class="d-inline-block bg-primary bg-opacity-10 p-3 rounded-circle mb-3">
              <i class="bi bi-shield-lock text-primary h3 mb-0"></i>
           </div>
-          <h2 class="fw-bold text-dark">Portal Login</h2>
-          <p class="text-muted small">Enter your credentials to access the ERP</p>
+          <h2 class="fw-bold text-dark">{{ _("Portal Login") }}</h2>
+          <p class="text-muted small">{{ _("Enter your credentials to access the ERP") }}</p>
         </div>
 
         {% if selected_role %}
@@ -69,14 +69,14 @@
             <i class="bi bi-person-badge"></i>
           </div>
           <div>
-            <span class="d-block small text-muted text-uppercase fw-bold" style="letter-spacing: 0.5px;">Active Role</span>
+            <span class="d-block small text-muted text-uppercase fw-bold" style="letter-spacing: 0.5px;">{{ _("Active Role") }}</span>
             <strong class="text-primary">{{ selected_role }}</strong>
           </div>
         </div>
         {% else %}
         <div class="alert alert-warning border-0 rounded-4 d-flex align-items-center mb-4">
           <i class="bi bi-exclamation-triangle-fill me-2"></i>
-          <small>Please select a role from the home page first.</small>
+          <small>{{ _("Please select a role from the home page first.") }}</small>
         </div>
         {% endif %}
 
@@ -87,28 +87,28 @@
 
           <div class="form-floating mb-3">
             <input type="text" class="form-control bg-light border-0" id="username" name="username" placeholder="Username" required>
-            <label for="username"><i class="bi bi-person me-2"></i>Username</label>
+            <label for="username"><i class="bi bi-person me-2"></i>{{ _("Username") }}</label>
           </div>
 
           <div class="form-floating mb-4">
             <input type="password" class="form-control bg-light border-0" id="password" name="password" placeholder="Password" required>
-            <label for="password"><i class="bi bi-key me-2"></i>Password</label>
+            <label for="password"><i class="bi bi-key me-2"></i>{{ _("Password") }}</label>
           </div>
 
           <div class="d-grid gap-2 mb-4">
             <button class="btn btn-primary btn-auth shadow-sm">
-              <i class="bi bi-box-arrow-in-right me-2"></i>Sign In
+              <i class="bi bi-box-arrow-in-right me-2"></i>{{ _("Sign In") }}
             </button>
           </div>
 
           <div class="d-flex justify-content-between align-items-center">
             <a href="{{ url_for('home') }}" class="login-footer-link">
-              <i class="bi bi-arrow-left me-1"></i>Landing Page
+              <i class="bi bi-arrow-left me-1"></i>{{ _("Landing Page") }}
             </a>
             
             {% if selected_role %}
             <a href="{{ url_for('reset_password', role=selected_role) }}" class="login-footer-link fw-medium text-primary">
-              Forgot password?
+              {{ _("Forgot password?") }}
             </a>
             {% endif %}
           </div>
@@ -120,7 +120,7 @@
     <div class="text-center mt-4">
       <p class="text-muted small">
         &copy; 2026 Toasted ERP Systems. <br> 
-        Secure Session Monitoring is Active.
+        {{ _("Secure Session Monitoring is Active.") }}
       </p>
     </div>
   </div>

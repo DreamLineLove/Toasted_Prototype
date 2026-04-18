@@ -95,7 +95,7 @@
             {% if user.role in ['Researcher', 'Production Planner', 'Production Manager', 'Regulatory Affairs', 'Warehouse Staff', 'Sales Staff'] %}
             <li class="nav-item">
               <a class="nav-link" href="{{ url_for('formulations') }}">
-                <i class="bi bi-flask me-1"></i> Formulations
+                <i class="bi bi-flask me-1"></i> {{ _("Formulations") }}
               </a>
             </li>
             {% endif %}
@@ -103,7 +103,7 @@
             {% if user.role in ['Production Planner', 'Production Manager', 'Regulatory Affairs', 'Warehouse Staff'] %}
             <li class="nav-item">
               <a class="nav-link" href="{{ url_for('inventory') }}">
-                <i class="bi bi-box-seam me-1"></i> Inventory
+                <i class="bi bi-box-seam me-1"></i> {{ _("Inventory") }}
               </a>
             </li>
             {% endif %}
@@ -111,7 +111,7 @@
             {% if user.role in ['Regulatory Affairs', 'Production Planner', 'Production Manager'] %}
             <li class="nav-item">
               <a class="nav-link" href="{{ url_for('audit') }}">
-                <i class="bi bi-journal-text me-1"></i> Audit Trail
+                <i class="bi bi-journal-text me-1"></i> {{ _("Audit Trail") }}
               </a>
             </li>
             {% endif %}
@@ -119,6 +119,19 @@
         </ul>
 
         <ul class="navbar-nav ms-auto align-items-center">
+          <li class="nav-item dropdown me-3">
+            <a class="nav-link dropdown-toggle text-white-50" href="#" id="languageDropdown" role="button" data-bs-toggle="dropdown">
+              <i class="bi bi-translate me-1"></i>{{ _("English") if session.get('lang', 'en') == 'en' else _("Thai") }}
+            </a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="{{ url_for('set_language', lang='en') }}">
+                <i class="bi bi-check-circle-fill me-2" style="color: {% if session.get('lang', 'en') == 'en' %}#198754{% else %}transparent{% endif %}"></i>{{ _("English") }}
+              </a></li>
+              <li><a class="dropdown-item" href="{{ url_for('set_language', lang='th') }}">
+                <i class="bi bi-check-circle-fill me-2" style="color: {% if session.get('lang', 'en') == 'th' %}#198754{% else %}transparent{% endif %}"></i>{{ _("Thai") }}
+              </a></li>
+            </ul>
+          </li>
           {% if user %}
           <li class="nav-item me-3">
             <span class="navbar-text user-pill text-white">

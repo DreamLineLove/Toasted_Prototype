@@ -1,0 +1,280 @@
+# Thai translations for PROJECT.
+# Copyright (C) 2026 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2026-04-18 02:34+0000\n"
+"PO-Revision-Date: 2026-04-18 02:34+0000\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: th\n"
+"Language-Team: th <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: templates/base.html:98
+msgid "Formulations"
+msgstr "สูตร"
+
+#: templates/base.html:106
+msgid "Inventory"
+msgstr "สินค้าคงคลัง"
+
+#: templates/base.html:114
+msgid "Audit Trail"
+msgstr "บันทึกการตรวจสอบ"
+
+#: templates/base.html:140
+msgid "English"
+msgstr "อังกฤษ"
+
+#: templates/base.html:141
+msgid "Thai"
+msgstr "ไทย"
+
+#: templates/login.html:32
+msgid "Portal Login"
+msgstr "เข้าสู่ระบบพอร์ทัล"
+
+#: templates/login.html:33
+msgid "Enter your credentials to access the ERP"
+msgstr "กรุณาป้อนข้อมูลประจำตัวเพื่อเข้าถึงระบบ ERP"
+
+#: templates/login.html:42
+msgid "Active Role"
+msgstr "บทบาทที่ใช้งาน"
+
+#: templates/login.html:49
+msgid "Please select a role from the home page first."
+msgstr "กรุณาเลือกบทบาทจากหน้าแรกก่อน"
+
+#: templates/login.html:58
+msgid "Username"
+msgstr "ชื่อผู้ใช้"
+
+#: templates/login.html:62
+msgid "Password"
+msgstr "รหัสผ่าน"
+
+#: templates/login.html:67
+msgid "Sign In"
+msgstr "เข้าสู่ระบบ"
+
+#: templates/login.html:73
+msgid "Landing Page"
+msgstr "หน้าแรก"
+
+#: templates/login.html:78
+msgid "Forgot password?"
+msgstr "ลืมรหัสผ่าน?"
+
+#: templates/login.html:87
+msgid "Secure Session Monitoring is Active."
+msgstr "การตรวจสอบเซสชันที่ปลอดภัยกำลังทำงาน"
+
+#: templates/register.html:44
+msgid "Join Toasted ERP"
+msgstr "เข้าร่วม Toasted ERP"
+
+#: templates/register.html:45
+msgid "Create your enterprise identity"
+msgstr "สร้างข้อมูลประจำตัวองค์กรของคุณ"
+
+#: templates/register.html:54
+msgid "Provisioning Account For"
+msgstr "การจัดเตรียมบัญชีสำหรับ"
+
+#: templates/register.html:61
+msgid "Standard registration enabled. Please select your organizational department below."
+msgstr "เปิดใช้งานการลงทะเบียนมาตรฐาน กรุณาเลือกแผนกองค์กรของคุณด้านล่าง"
+
+#: templates/register.html:70
+msgid "Choose Username"
+msgstr "เลือกชื่อผู้ใช้"
+
+#: templates/register.html:75
+msgid "Secure Password"
+msgstr "รหัสผ่านที่ปลอดภัย"
+
+#: templates/register.html:80
+msgid "Assigned Department"
+msgstr "แผนกที่ได้รับมอบหมาย"
+
+#: templates/register.html:84
+msgid "Select your role..."
+msgstr "เลือกบทบาทของคุณ..."
+
+#: templates/register.html:86
+msgid "Researcher"
+msgstr "นักวิจัย"
+
+#: templates/register.html:87
+msgid "Production Planner"
+msgstr "ผู้วางแผนการผลิต"
+
+#: templates/register.html:88
+msgid "Production Manager"
+msgstr "ผู้จัดการการผลิต"
+
+#: templates/register.html:89
+msgid "Regulatory Affairs"
+msgstr "กิจการกำกับดูแล"
+
+#: templates/register.html:90
+msgid "Warehouse Staff"
+msgstr "พนักงานคลังสินค้า"
+
+#: templates/register.html:91
+msgid "Sales Staff"
+msgstr "พนักงานขาย"
+
+#: templates/register.html:92
+msgid "Customer"
+msgstr "ลูกค้า"
+
+#: templates/register.html:93
+msgid "Delivery Manager"
+msgstr "ผู้จัดการจัดส่ง"
+
+#: templates/register.html:99
+msgid "Initialize Account"
+msgstr "เริ่มต้นบัญชี"
+
+#: templates/register.html:104
+msgid "Return to landing page"
+msgstr "กลับไปยังหน้าแรก"
+
+#: templates/register.html:112
+msgid "Encryption standards compliant with Pharma-IT protocols."
+msgstr "มาตรฐานการเข้ารหัสสอดคล้องกับโปรโตคอล Pharma-IT"
+
+#: templates/dashboard.html:25
+msgid "Welcome back,"
+msgstr "ยินดีต้อนรับกลับ,"
+
+#: templates/dashboard.html:26
+msgid "Logged in as"
+msgstr "เข้าสู่ระบบในฐานะ"
+
+#: templates/dashboard.html:35
+msgid "Execute your"
+msgstr "ดำเนินการ"
+
+#: templates/dashboard.html:35
+msgid "duties and manage ongoing tasks."
+msgstr "หน้าที่และจัดการงานที่กำลังดำเนินอยู่"
+
+#: templates/dashboard.html:37
+msgid "Launch Task"
+msgstr "เริ่มงาน"
+
+#: templates/dashboard.html:45
+msgid "Portal Access"
+msgstr "การเข้าถึงพอร์ทัล"
+
+#: templates/dashboard.html:46
+msgid "Please select your role below to access the management dashboard or register for a new account."
+msgstr "กรุณาเลือกบทบาทของคุณด้านล่างเพื่อเข้าถึงแดชบอร์ดการจัดการหรือลงทะเบียนบัญชีใหม่"
+
+#: templates/dashboard.html:55
+msgid "Dedicated access for authorized"
+msgstr "การเข้าถึงเฉพาะสำหรับ"
+
+#: templates/dashboard.html:55
+msgid "members."
+msgstr "สมาชิกที่ได้รับอนุญาต"
+
+#: templates/dashboard.html:58
+msgid "Sign In"
+msgstr "เข้าสู่ระบบ"
+
+#: templates/dashboard.html:60
+msgid "Create Account"
+msgstr "สร้างบัญชี"
+
+#: templates/reset_password.html:44
+msgid "Account Recovery"
+msgstr "การกู้คืนบัญชี"
+
+#: templates/reset_password.html:45
+msgid "Reset your credentials for the ERP system"
+msgstr "รีเซ็ตรหัสประจำตัวสำหรับระบบ ERP"
+
+#: templates/reset_password.html:54
+msgid "System Role"
+msgstr "บทบาทในระบบ"
+
+#: templates/reset_password.html:61
+msgid "Account context missing. Please return to the portal home."
+msgstr "ข้อมูลบริบทบัญชีหายไป กรุณากลับไปยังหน้าแรกของพอร์ทัล"
+
+#: templates/reset_password.html:70
+msgid "New Password"
+msgstr "รหัสผ่านใหม่"
+
+#: templates/reset_password.html:74
+msgid "Must follow organization security complexity standards."
+msgstr "ต้องปฏิบัติตามมาตรฐานความซับซ้อนด้านความปลอดภัยขององค์กร"
+
+#: templates/reset_password.html:79
+msgid "Update Credentials"
+msgstr "อัปเดตรหัสประจำตัว"
+
+#: templates/reset_password.html:84
+msgid "Cancel and Return"
+msgstr "ยกเลิกและกลับ"
+
+#: templates/reset_password.html:92
+msgid "End-to-End Encrypted Session"
+msgstr "เซสชันที่เข้ารหัสแบบครบวงจร"
+
+#: templates/formulations.html:32
+msgid "Drug Formulations"
+msgstr "สูตรยา"
+
+#: templates/formulations.html:33
+msgid "Authorized access to active pharmaceutical ingredients (API) blueprints."
+msgstr "การเข้าถึงที่ได้รับอนุญาตสำหรับแบบร่างส่วนผสมยาสำคัญ (API)"
+
+#: templates/formulations.html:38
+msgid "New Formulation"
+msgstr "สูตรใหม่"
+
+#: templates/formulations.html:46
+msgid "Formulation Name"
+msgstr "ชื่อสูตร"
+
+#: templates/formulations.html:47
+msgid "Primary Author"
+msgstr "ผู้เขียนหลัก"
+
+#: templates/formulations.html:48
+msgid "Record Date"
+msgstr "วันที่บันทึก"
+
+#: templates/formulations.html:49
+msgid "Security Status / Data"
+msgstr "สถานะความปลอดภัย / ข้อมูล"
+
+#: templates/formulations.html:50
+msgid "Actions"
+msgstr "การดำเนินการ"
+
+#: templates/formulations.html:70
+msgid "Restricted"
+msgstr "ถูกจำกัด"
+
+#: templates/formulations.html:78
+msgid "The vault is currently empty."
+msgstr "ห้องนิรภัยว่างเปล่าตอนนี้"
+
+#: templates/formulations.html:87
+msgid "Back to Dashboard"
+msgstr "กลับไปยังแดชบอร์ด"
+
