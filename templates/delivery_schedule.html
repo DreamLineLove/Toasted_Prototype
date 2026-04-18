@@ -93,7 +93,7 @@
             <label class="form-label fw-medium small">Expected Arrival Date</label>
             <div class="input-group">
               <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-clock"></i></span>
-              <input type="date" class="form-control border-start-0 ps-0" name="scheduled_date" required />
+              <input type="date" class="form-control border-start-0 ps-0" name="scheduled_date" min="{{ today }}" required />
             </div>
           </div>
 

@@ -381,6 +381,9 @@ def create_formulation():
         if not name or not payload:
             flash("Drug formulation name and payload are required.", "warning")
             return redirect(url_for("create_formulation"))
+        if Formulation.query.filter_by(name=name).first():
+            flash("A formulation with that name already exists.", "warning")
+            return redirect(url_for("create_formulation"))
         encrypted_payload, nonce = encrypt_payload(payload)
         formulation = Formulation(name=name, encrypted_payload=encrypted_payload, nonce=nonce, created_by=user.username)
         db.session.add(formulation)
@@ -400,6 +403,9 @@ def inventory_manage():
         quantity = int(request.form.get("quantity", 0))
         if not drug_name or quantity < 0:
             flash("Drug name is required and quantity cannot be negative.", "warning")
+            return redirect(url_for("inventory_manage"))
+        if abs(quantity) > 100000:
+            flash("Quantity change cannot exceed 100,000 units.", "warning")
             return redirect(url_for("inventory_manage"))
         item = InventoryItem.query.filter_by(drug_name=drug_name).first()
         if item is None:
@@ -505,6 +511,9 @@ def create_batch():
         if not batch_name or not drug_name:
             flash("Batch name and drug name are required.", "warning")
             return redirect(url_for("create_batch"))
+        if ProductionBatch.query.filter_by(batch_name=batch_name).first():
+            flash("A batch with that ID already exists.", "warning")
+            return redirect(url_for("create_batch"))
         batch = ProductionBatch(batch_name=batch_name, drug_name=drug_name,
                                 formulation_id=formulation_id, created_by=user.username)
         db.session.add(batch)
@@ -527,6 +536,9 @@ def raw_materials():
         batch_id = request.form.get("batch_id") or None
         if not material_name or quantity <= 0:
             flash("Material name and positive quantity are required.", "warning")
+            return redirect(url_for("raw_materials"))
+        if quantity > 100000:
+            flash("Quantity cannot exceed 100,000 units.", "warning")
             return redirect(url_for("raw_materials"))
         request_item = RawMaterialRequest(material_name=material_name, quantity=quantity,
                                           batch_id=batch_id, requested_by=user.username)
@@ -591,6 +603,9 @@ def customer_portal():
         if not drug_name or quantity <= 0:
             flash("Please choose a drug and quantity.", "warning")
             return redirect(url_for("customer_portal"))
+        if quantity > 100000:
+            flash("Order quantity cannot exceed 100,000 units.", "warning")
+            return redirect(url_for("customer_portal"))
         order = CustomerOrder(customer_name=user.username, drug_name=drug_name, quantity=quantity)
         db.session.add(order)
         db.session.commit()
@@ -624,6 +639,9 @@ def delivery_schedule():
                 return redirect(url_for("delivery_schedule"))
             from datetime import date
             scheduled_date = date.fromisoformat(scheduled_date_str)
+            if scheduled_date < date.today():
+                flash("Scheduled date cannot be in the past.", "warning")
+                return redirect(url_for("delivery_schedule"))
             order = CustomerOrder.query.get(order_id)
             if not order:
                 flash("Selected order not found.", "warning")
@@ -669,9 +687,11 @@ def delivery_schedule():
                       f"transport={transport}")
             flash("Transport assigned.", "success")
         return redirect(url_for("delivery_schedule"))
+    from datetime import date
     schedules = DeliverySchedule.query.order_by(DeliverySchedule.scheduled_date).all()
     approved_orders = CustomerOrder.query.filter_by(status="Approved").order_by(CustomerOrder.created_at.desc()).all()
-    return render_template("delivery_schedule.html", user=user, schedules=schedules, approved_orders=approved_orders)
+    return render_template("delivery_schedule.html", user=user, schedules=schedules,
+                           approved_orders=approved_orders, today=date.today().isoformat())
 
 
 @app.route("/material_requests", methods=["GET", "POST"])
