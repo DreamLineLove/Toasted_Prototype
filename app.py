@@ -177,13 +177,13 @@ ROLE_ACTIONS = {
     ],
     "Production Planner": [
         {"label": "Demand forecasting", "endpoint": "forecast"},
-        {"label": "Review inventory", "endpoint": "inventory"},
+        {"label": "Review inventory", "endpoint": "inventory_manage"},
         {"label": "Audit review", "endpoint": "audit"},
     ],
     "Production Manager": [
         {"label": "Create production batch", "endpoint": "create_batch"},
         {"label": "Request raw materials", "endpoint": "raw_materials"},
-        {"label": "Review inventory", "endpoint": "inventory"},
+        {"label": "Review inventory", "endpoint": "inventory_manage"},
     ],
     "Regulatory Affairs": [
         {"label": "Release production batch", "endpoint": "release_batch"},
@@ -191,8 +191,8 @@ ROLE_ACTIONS = {
         {"label": "View formulations", "endpoint": "formulations"},
     ],
     "Warehouse Staff": [
-        {"label": "Manage inventory", "endpoint": "inventory"},
-        {"label": "Reserve stock", "endpoint": "inventory"},
+        {"label": "Manage inventory", "endpoint": "inventory_manage"},
+        {"label": "Reserve stock", "endpoint": "inventory_reserve"},
     ],
     "Sales Staff": [
         {"label": "Approve customer orders", "endpoint": "sales_orders"},
@@ -200,7 +200,7 @@ ROLE_ACTIONS = {
     ],
     "Customer": [
         {"label": "Browse availability", "endpoint": "customer_portal"},
-        {"label": "Track delivery status", "endpoint": "delivery_schedule"},
+        {"label": "Track delivery status", "endpoint": "track_delivery"},
     ],
     "Delivery Manager": [
         {"label": "Schedule delivery", "endpoint": "delivery_schedule"},
@@ -332,40 +332,69 @@ def create_formulation():
     return render_template("formulation_create.html", user=user)
 
 
-@app.route("/inventory", methods=["GET", "POST"])
+@app.route("/inventory_manage", methods=["GET", "POST"])
 @require_roles("Warehouse Staff", "Production Planner", "Production Manager", "Regulatory Affairs")
-def inventory():
+def inventory_manage():
     user = current_user()
     if request.method == "POST":
         drug_name = request.form["drug_name"].strip()
         quantity = int(request.form.get("quantity", 0))
-        reserve = int(request.form.get("reserve", 0))
-        if not drug_name or quantity < 0 or reserve < 0:
-            flash("Drug name is required and quantities cannot be negative.", "warning")
-            return redirect(url_for("inventory"))
+        if not drug_name or quantity < 0:
+            flash("Drug name is required and quantity cannot be negative.", "warning")
+            return redirect(url_for("inventory_manage"))
         item = InventoryItem.query.filter_by(drug_name=drug_name).first()
         if item is None:
-            item = InventoryItem(drug_name=drug_name, quantity=quantity, reserved=reserve, updated_by=user.username)
+            if quantity < 1:
+                flash("Cannot create inventory with quantity less than 1.", "warning")
+                return redirect(url_for("inventory_manage"))
+            item = InventoryItem(drug_name=drug_name, quantity=quantity, reserved=0, updated_by=user.username)
             db.session.add(item)
         else:
-            item.quantity += quantity
-            item.reserved += reserve
+            new_quantity = item.quantity + quantity
+            if new_quantity < 0:
+                flash("Cannot reduce inventory below 0.", "warning")
+                return redirect(url_for("inventory_manage"))
+            item.quantity = new_quantity
             item.updated_by = user.username
             item.updated_at = datetime.utcnow()
         db.session.commit()
-        log_event(user.username, user.role, "Updated inventory", drug_name, f"quantity={quantity}, reserved={reserve}")
-        flash("Inventory updated and reserved items recorded.", "success")
-        return redirect(url_for("inventory"))
+        log_event(user.username, user.role, "Updated inventory", drug_name, f"quantity_change={quantity}")
+        flash("Inventory updated.", "success")
+        return redirect(url_for("inventory_manage"))
     items = InventoryItem.query.order_by(InventoryItem.drug_name).all()
     return render_template("inventory.html", user=user, items=items)
 
 
-@app.route("/audit")
-@require_roles("Regulatory Affairs", "Production Planner", "Production Manager")
-def audit():
+@app.route("/inventory_reserve", methods=["GET", "POST"])
+@require_roles("Warehouse Staff")
+def inventory_reserve():
     user = current_user()
-    events = AuditEvent.query.order_by(AuditEvent.timestamp.desc()).limit(100).all()
-    return render_template("audit_trail.html", user=user, events=events)
+    if request.method == "POST":
+        drug_name = request.form["drug_name"].strip()
+        reserve = int(request.form.get("reserve", 0))
+        if not drug_name:
+            flash("Drug name is required.", "warning")
+            return redirect(url_for("inventory_reserve"))
+        if reserve < 1:
+            flash("Reserve quantity must be at least 1.", "warning")
+            return redirect(url_for("inventory_reserve"))
+        item = InventoryItem.query.filter_by(drug_name=drug_name).first()
+        if item is None:
+            flash("Drug not found in inventory.", "warning")
+            return redirect(url_for("inventory_reserve"))
+        available = item.quantity - item.reserved
+        if reserve > available:
+            flash("Cannot reserve more than available stock.", "warning")
+            return redirect(url_for("inventory_reserve"))
+        item.reserved += reserve
+        item.updated_by = user.username
+        item.updated_at = datetime.utcnow()
+        db.session.commit()
+        log_event(user.username, user.role, "Reserved stock", drug_name, f"reserved={reserve}")
+        flash("Stock reserved.", "success")
+        return redirect(url_for("inventory_reserve"))
+    items = InventoryItem.query.order_by(InventoryItem.drug_name).all()
+    return render_template("inventory_reserve.html", user=user, items=items)
 
 
 @app.route("/research_search", methods=["GET", "POST"])
@@ -508,24 +537,12 @@ def customer_portal():
     return render_template("customer_portal.html", user=user, inventory_items=inventory_items, orders=orders)
 
 
-@app.route("/delivery_schedule", methods=["GET", "POST"])
-@require_roles("Delivery Manager", "Customer")
-def delivery_schedule():
+@app.route("/track_delivery")
+@require_roles("Customer")
+def track_delivery():
     user = current_user()
-    if request.method == "POST":
-        destination = request.form["destination"].strip()
-        scheduled_date = request.form.get("scheduled_date")
-        if not destination or not scheduled_date:
-            flash("Destination and scheduled date are required.", "warning")
-            return redirect(url_for("delivery_schedule"))
-        schedule = DeliverySchedule(destination=destination, scheduled_date=datetime.fromisoformat(scheduled_date).date(), manager=user.username)
-        db.session.add(schedule)
-        db.session.commit()
-        log_event(user.username, user.role, "Scheduled delivery", destination, f"date={scheduled_date}")
-        flash("Delivery schedule saved.", "success")
-        return redirect(url_for("delivery_schedule"))
-    schedules = DeliverySchedule.query.order_by(DeliverySchedule.scheduled_date.desc()).all()
-    return render_template("delivery_schedule.html", user=user, schedules=schedules)
+    orders = CustomerOrder.query.filter_by(customer_name=user.username).order_by(CustomerOrder.created_at.desc()).all()
+    return render_template("track_delivery.html", user=user, orders=orders)
 
 
 if __name__ == "__main__":

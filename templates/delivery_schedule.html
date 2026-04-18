@@ -50,6 +50,7 @@
 </style>
 
 <div class="row g-4 animate-fade-in">
+  {% if user.role == 'Delivery Manager' %}
   <div class="col-lg-5 col-xl-4">
     <div class="card shadow-sm logistics-card">
       <div class="card-body p-4">
@@ -89,8 +90,9 @@
       </div>
     </div>
   </div>
+  {% endif %}
 
-  <div class="col-lg-7 col-xl-8">
+  <div class="{% if user.role == 'Delivery Manager' %}col-lg-7 col-xl-8{% else %}col-12{% endif %}">
     <div class="card shadow-sm logistics-card h-100">
       <div class="card-header bg-white py-3 border-0">
         <h3 class="h5 mb-0 fw-bold">Upcoming Shipments</h3>

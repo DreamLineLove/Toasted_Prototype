@@ -102,7 +102,7 @@
 
             {% if user.role in ['Production Planner', 'Production Manager', 'Regulatory Affairs', 'Warehouse Staff'] %}
             <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('inventory') }}">
+              <a class="nav-link" href="{{ url_for('inventory_manage') }}">
                 <i class="bi bi-box-seam me-1"></i> {{ _("Inventory") }}
               </a>
             </li>

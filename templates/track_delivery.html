@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+  /* Logistics Dashboard Styling */
+  .logistics-card {
+    border: none;
+    border-radius: 12px;
+    background: #ffffff;
+  }
+  .form-section-title {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #6c757d;
+    margin-bottom: 1.5rem;
+    display: block;
+  }
+  .destination-icon {
+    background: #f8f9fa;
+    color: #0d6efd;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .date-badge {
+    background: #eef2ff;
+    color: #4338ca;
+    font-weight: 600;
+    padding: 0.3rem 0.7rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
+  }
+  .status-tag {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.6rem;
+    border-radius: 4px;
+    font-weight: 600;
+  }
+  .table-delivery thead th {
+    background-color: #fcfcfd;
+    font-size: 0.75rem;
+    color: #94a3b8;
+    border-bottom: 1px solid #f1f5f9;
+  }
+</style>
+
+<div class="container-fluid py-4">
+  <div class="row mb-4">
+    <div class="col-12">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{{ url_for('home') }}">Dashboard</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Track Delivery Status</li>
+        </ol>
+      </nav>
+    </div>
+  </div>
+
+<div class="row g-4 animate-fade-in">
+    <div class="col-12">
+      <div class="card shadow-sm logistics-card h-100">
+        <div class="card-header bg-white py-3 border-0">
+          <h3 class="h5 mb-0 fw-bold">Your Orders & Delivery Status</h3>
+        </div>
+        <div class="table-responsive">
+          <table class="table table-hover align-middle table-delivery mb-0">
+            <thead>
+              <tr>
+                <th class="ps-4">Drug Name</th>
+                <th>Quantity</th>
+                <th>Order Date</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for order in orders %}
+              <tr>
+                <td class="ps-4">
+                  <div class="d-flex align-items-center">
+                    <div class="destination-icon me-3">
+                      <i class="bi bi-capsule"></i>
+                    </div>
+                    <span class="fw-semibold text-dark">{{ order.drug_name }}</span>
+                  </div>
+                </td>
+                <td>
+                  <span class="fw-medium">{{ order.quantity }}</span>
+                </td>
+                <td>
+                  <span class="date-badge">
+                    <i class="bi bi-calendar3 me-1"></i> {{ order.created_at.strftime('%Y-%m-%d') }}
+                  </span>
+                </td>
+                <td>
+                  <span class="status-tag 
+                    {% if order.status == 'Delivered' %}bg-success text-white
+                    {% elif order.status == 'Shipped' %}bg-info text-white
+                    {% elif order.status == 'Approved' %}bg-warning text-dark
+                    {% else %}bg-secondary text-white{% endif %}">
+                     {{ order.status }}
+                  </span>
+                </td>
+              </tr>
+              {% endfor %}
+              {% if not orders %}
+              <tr>
+                <td colspan="4" class="text-center py-5">
+                  <i class="bi bi-cart-x d-block h1 text-light mb-3"></i>
+                  <p class="text-muted">No orders found.</p>
+                </td>
+              </tr>
+              {% endif %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<div class="mt-4">
+  <a class="btn btn-link text-muted text-decoration-none p-0" href="{{ url_for('home') }}">
+    <i class="bi bi-chevron-left"></i> Return to Dashboard
+  </a>
+</div>
+{% endblock %}

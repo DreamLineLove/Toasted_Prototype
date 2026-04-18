@@ -53,8 +53,8 @@
     <div class="card shadow-sm inventory-card h-100">
       <div class="card-body p-4">
         <div class="update-header mb-4">
-          <h4 class="fw-bold mb-1">Manage Inventory</h4>
-          <p class="text-muted small">Adjust stock levels.</p>
+          <h4 class="fw-bold mb-1">Reserve Stock</h4>
+          <p class="text-muted small">Reserve available stock for orders.</p>
         </div>
         
         <form method="post">
@@ -64,23 +64,23 @@
               <span class="input-group-text bg-light border-end-0 text-muted"><i class="bi bi-search"></i></span>
               <input class="form-control form-control-custom border-start-0 ps-0" 
                      name="drug_name" 
-                     placeholder="Search or enter drug..." 
+                     placeholder="Enter existing drug..." 
                      required 
                      maxlength="120" />
             </div>
           </div>
 
           <div class="mb-4">
-            <label class="form-label small fw-bold text-uppercase text-secondary">Quantity Change</label>
+            <label class="form-label small fw-bold text-uppercase text-secondary">Reserve Quantity</label>
             <div class="input-group">
-              <span class="input-group-text bg-light border-end-0 text-muted"><i class="bi bi-plus-slash-minus"></i></span>
+              <span class="input-group-text bg-light border-end-0 text-muted"><i class="bi bi-bookmark-fill"></i></span>
               <input type="number" class="form-control form-control-custom border-start-0 ps-0" 
-                     name="quantity" value="0" />
+                     name="reserve" value="1" min="1" required />
             </div>
           </div>
 
           <button class="btn btn-primary w-100 py-2 fw-bold rounded-3 shadow-sm">
-            <i class="bi bi-arrow-repeat me-2"></i> Update Inventory
+            <i class="bi bi-bookmark-plus me-2"></i> Reserve Stock
           </button>
         </form>
       </div>
