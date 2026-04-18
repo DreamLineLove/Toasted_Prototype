@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+  .profile-card {
+    border: none;
+    border-radius: 20px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.06);
+  }
+  .profile-header {
+    background: linear-gradient(135deg, #6610f2 0%, #0d6efd 100%);
+    border-radius: 20px 20px 0 0;
+    padding: 2.5rem 2rem;
+    color: white;
+  }
+  .avatar-circle {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    font-weight: 700;
+    border: 3px solid rgba(255,255,255,0.4);
+  }
+  .form-control:focus {
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 0.25rem rgba(79,70,229,0.1);
+  }
+  .field-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: #94a3b8;
+    margin-bottom: 0.4rem;
+  }
+</style>
+
+<div class="row justify-content-center animate-fade-in">
+  <div class="col-md-8 col-lg-6">
+    <div class="card profile-card">
+      <div class="profile-header">
+        <div class="d-flex align-items-center gap-3">
+          <div class="avatar-circle">{{ user.username[0]|upper }}</div>
+          <div>
+            <h2 class="fw-bold mb-0">{{ user.username }}</h2>
+            <span class="badge bg-white bg-opacity-25 text-white mt-1">{{ user.role }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-body p-4 p-md-5">
+        <form method="post">
+          <div class="mb-4">
+            <div class="field-label">{{ _("Pharmacy / Hospital / Establishment") }}</div>
+            <div class="input-group">
+              <span class="input-group-text bg-light border-end-0 text-muted"><i class="bi bi-hospital"></i></span>
+              <input type="text" class="form-control border-start-0" name="establishment_name"
+                     value="{{ user.establishment_name or '' }}" placeholder="Establishment name" required>
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <div class="field-label">{{ _("Email Address") }}</div>
+            <div class="input-group">
+              <span class="input-group-text bg-light border-end-0 text-muted"><i class="bi bi-envelope"></i></span>
+              <input type="email" class="form-control border-start-0" name="email"
+                     value="{{ user.email or '' }}" placeholder="email@example.com" required>
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <div class="field-label">{{ _("Phone Number") }}</div>
+            <div class="input-group">
+              <span class="input-group-text bg-light border-end-0 text-muted"><i class="bi bi-telephone"></i></span>
+              <input type="tel" class="form-control border-start-0" name="phone"
+                     value="{{ user.phone or '' }}" placeholder="+66 xx xxx xxxx" required>
+            </div>
+          </div>
+
+          <div class="mb-5">
+            <div class="field-label">{{ _("Business License Number") }}</div>
+            <div class="input-group">
+              <span class="input-group-text bg-light border-end-0 text-muted"><i class="bi bi-card-checklist"></i></span>
+              <input type="text" class="form-control border-start-0" name="business_license"
+                     value="{{ user.business_license or '' }}" placeholder="License number" required>
+            </div>
+          </div>
+
+          <button class="btn btn-primary w-100 py-2 fw-bold rounded-pill shadow-sm">
+            <i class="bi bi-save me-2"></i>{{ _("Save Registration Details") }}
+          </button>
+        </form>
+
+        <div class="mt-4 text-center">
+          <a class="btn btn-link text-decoration-none text-muted p-0" href="{{ url_for('home') }}">
+            <i class="bi bi-arrow-left me-1"></i>{{ _("Back to Dashboard") }}
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

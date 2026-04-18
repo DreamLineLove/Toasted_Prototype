@@ -48,6 +48,17 @@ def ensure_db_schema():
         if cols and "order_id" not in cols:
             cur.execute("ALTER TABLE delivery_schedule ADD COLUMN order_id INTEGER REFERENCES customer_order(id)")
             conn.commit()
+        cur.execute("PRAGMA table_info(user)")
+        user_cols = [r[1] for r in cur.fetchall()]
+        for col, typedef in [
+            ("establishment_name", "VARCHAR(200)"),
+            ("email", "VARCHAR(120)"),
+            ("phone", "VARCHAR(40)"),
+            ("business_license", "VARCHAR(120)"),
+        ]:
+            if user_cols and col not in user_cols:
+                cur.execute(f"ALTER TABLE user ADD COLUMN {col} {typedef}")
+                conn.commit()
         conn.close()
     except sqlite3.Error:
         pass
@@ -67,6 +78,10 @@ class User(db.Model):
     username = db.Column(db.String(80), nullable=False)
     password_hash = db.Column(db.LargeBinary(60), nullable=False)
     role = db.Column(db.String(40), nullable=False)
+    establishment_name = db.Column(db.String(200), nullable=True)
+    email = db.Column(db.String(120), nullable=True)
+    phone = db.Column(db.String(40), nullable=True)
+    business_license = db.Column(db.String(120), nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
 
@@ -217,6 +232,7 @@ ROLE_ACTIONS = {
         {"label": "Browse availability", "endpoint": "customer_portal"},
         {"label": "Track delivery status", "endpoint": "track_delivery"},
         {"label": "Contact sales", "endpoint": "chat"},
+        {"label": "Edit registration details", "endpoint": "profile"},
     ],
     "Delivery Manager": [
         {"label": "Manage Deliveries", "endpoint": "delivery_schedule", "description": "Schedule new deliveries, reschedule existing ones, and assign transport vehicles."},
@@ -250,7 +266,19 @@ def register():
         if User.query.filter_by(username=username, role=role).first():
             flash("An account for this username and role already exists.", "warning")
             return redirect(url_for("register", role=selected_role) if selected_role else url_for("register"))
-        user = User(username=username, password_hash=hash_password(password), role=role)
+        if role == "Customer":
+            establishment_name = request.form.get("establishment_name", "").strip()
+            email = request.form.get("email", "").strip()
+            phone = request.form.get("phone", "").strip()
+            business_license = request.form.get("business_license", "").strip()
+            if not establishment_name or not email or not phone or not business_license:
+                flash("All establishment details are required for customer registration.", "warning")
+                return redirect(url_for("register", role=selected_role) if selected_role else url_for("register"))
+            user = User(username=username, password_hash=hash_password(password), role=role,
+                        establishment_name=establishment_name, email=email,
+                        phone=phone, business_license=business_license)
+        else:
+            user = User(username=username, password_hash=hash_password(password), role=role)
         db.session.add(user)
         db.session.commit()
         flash("Registration successful. Please log in.", "success")
@@ -620,6 +648,24 @@ def delivery_schedule():
     schedules = DeliverySchedule.query.order_by(DeliverySchedule.scheduled_date).all()
     approved_orders = CustomerOrder.query.filter_by(status="Approved").order_by(CustomerOrder.created_at.desc()).all()
     return render_template("delivery_schedule.html", user=user, schedules=schedules, approved_orders=approved_orders)
+
+
+@app.route("/profile", methods=["GET", "POST"])
+@require_roles("Customer")
+def profile():
+    user = current_user()
+    if request.method == "POST":
+        user.establishment_name = request.form.get("establishment_name", "").strip()
+        user.email = request.form.get("email", "").strip()
+        user.phone = request.form.get("phone", "").strip()
+        user.business_license = request.form.get("business_license", "").strip()
+        if not user.establishment_name or not user.email or not user.phone or not user.business_license:
+            flash("All fields are required.", "warning")
+            return redirect(url_for("profile"))
+        db.session.commit()
+        flash("Profile updated successfully.", "success")
+        return redirect(url_for("profile"))
+    return render_template("profile.html", user=user)
 
 
 @app.route("/chat", methods=["GET", "POST"])

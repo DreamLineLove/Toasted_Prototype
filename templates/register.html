@@ -131,6 +131,35 @@
           </div>
           {% endif %}
 
+          {% if selected_role == 'Customer' %}
+          <hr class="my-4">
+          <p class="small fw-bold text-muted text-uppercase mb-3">{{ _("Establishment Details") }}</p>
+
+          <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="regEstablishment" name="establishment_name"
+                   placeholder="Establishment" required>
+            <label for="regEstablishment"><i class="bi bi-hospital me-2"></i>{{ _("Pharmacy / Hospital / Establishment Name") }}</label>
+          </div>
+
+          <div class="form-floating mb-3">
+            <input type="email" class="form-control" id="regEmail" name="email"
+                   placeholder="Email" required>
+            <label for="regEmail"><i class="bi bi-envelope me-2"></i>{{ _("Email Address") }}</label>
+          </div>
+
+          <div class="form-floating mb-3">
+            <input type="tel" class="form-control" id="regPhone" name="phone"
+                   placeholder="Phone" required>
+            <label for="regPhone"><i class="bi bi-telephone me-2"></i>{{ _("Phone Number") }}</label>
+          </div>
+
+          <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="regLicense" name="business_license"
+                   placeholder="License" required>
+            <label for="regLicense"><i class="bi bi-card-checklist me-2"></i>{{ _("Business License Number") }}</label>
+          </div>
+          {% endif %}
+
           <div class="d-grid gap-3 pt-2">
             <button class="btn btn-primary btn-register shadow-sm">
               {{ _("Initialize Account") }} <i class="bi bi-arrow-right ms-2"></i>
