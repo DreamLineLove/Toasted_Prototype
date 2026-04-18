@@ -232,7 +232,6 @@ ROLE_ACTIONS = {
         {"label": "Create production batch", "endpoint": "create_batch"},
         {"label": "View production batches", "endpoint": "view_batches"},
         {"label": "Request raw materials", "endpoint": "raw_materials"},
-        {"label": "Review inventory", "endpoint": "inventory_manage"},
     ],
     "Regulatory Affairs": [
         {"label": "View production batches", "endpoint": "view_batches"},
@@ -395,7 +394,7 @@ def create_formulation():
 
 
 @app.route("/inventory_manage", methods=["GET", "POST"])
-@require_roles("Warehouse Staff", "Production Manager")
+@require_roles("Warehouse Staff")
 def inventory_manage():
     user = current_user()
     if request.method == "POST":
