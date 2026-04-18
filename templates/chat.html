@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+  .chat-wrapper {
+    max-width: 760px;
+    margin: 0 auto;
+  }
+  .chat-bubble {
+    max-width: 72%;
+    word-break: break-word;
+  }
+  .bubble-self {
+    background: #0d6efd;
+    color: #fff;
+    border-radius: 18px 18px 4px 18px;
+  }
+  .bubble-other {
+    background: #f1f5f9;
+    color: #1e293b;
+    border-radius: 18px 18px 18px 4px;
+  }
+  .role-badge {
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 2px 7px;
+    border-radius: 4px;
+  }
+  .badge-customer { background: #e0f2fe; color: #0369a1; }
+  .badge-sales { background: #fef9c3; color: #854d0e; }
+  .chat-log {
+    height: 480px;
+    overflow-y: auto;
+    background: #fcfcfd;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .send-area {
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    background: #fff;
+    padding: 1rem;
+  }
+  .sender-avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.8rem;
+    flex-shrink: 0;
+  }
+  .avatar-self { background: #0d6efd; color: #fff; }
+  .avatar-other { background: #e2e8f0; color: #475569; }
+</style>
+
+<div class="chat-wrapper py-2 animate-fade-in">
+  <div class="d-flex align-items-center mb-4">
+    <div class="bg-primary bg-opacity-10 text-primary p-3 rounded-3 me-3">
+      <i class="bi bi-chat-dots h3 mb-0"></i>
+    </div>
+    <div>
+      <h2 class="fw-bold mb-1">Customer Support Chat</h2>
+      <p class="text-muted small mb-0">Direct communication between customers and sales staff.</p>
+    </div>
+  </div>
+
+  <div class="chat-log mb-3" id="chatLog">
+    {% for msg in messages %}
+    {% set is_self = msg.sender == user.username %}
+    <div class="d-flex align-items-end gap-2 mb-3 {% if is_self %}flex-row-reverse{% endif %}">
+      <div class="sender-avatar {% if is_self %}avatar-self{% else %}avatar-other{% endif %}">
+        {{ msg.sender[0]|upper }}
+      </div>
+      <div class="chat-bubble px-3 py-2 {% if is_self %}bubble-self{% else %}bubble-other{% endif %}">
+        <div class="d-flex align-items-center gap-2 mb-1 {% if is_self %}flex-row-reverse{% endif %}">
+          <span class="fw-semibold" style="font-size:0.82rem;">{{ msg.sender }}</span>
+          <span class="role-badge {% if msg.sender_role == 'Customer' %}badge-customer{% else %}badge-sales{% endif %}">
+            {{ msg.sender_role }}
+          </span>
+        </div>
+        <div style="font-size:0.9rem;">{{ msg.message }}</div>
+        <div class="mt-1 opacity-75" style="font-size:0.7rem;">
+          {{ msg.sent_at.strftime('%Y-%m-%d %H:%M') }}
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+
+    {% if not messages %}
+    <div class="text-center py-5 text-muted">
+      <i class="bi bi-chat-square-dots d-block h1 opacity-25 mb-3"></i>
+      <p>No messages yet. Start the conversation.</p>
+    </div>
+    {% endif %}
+  </div>
+
+  <div class="send-area shadow-sm">
+    <form method="post" class="d-flex gap-2 align-items-end">
+      <textarea class="form-control border-0 shadow-none" name="message"
+                placeholder="Type your message…" rows="2" maxlength="1000" required
+                style="resize:none; background:transparent;"></textarea>
+      <button class="btn btn-primary px-4 py-2 fw-bold flex-shrink-0">
+        <i class="bi bi-send-fill me-1"></i>Send
+      </button>
+    </form>
+  </div>
+
+  <div class="mt-4">
+    <a class="btn btn-link text-decoration-none text-muted p-0" href="{{ url_for('home') }}">
+      <i class="bi bi-arrow-left me-1"></i> Back to Dashboard
+    </a>
+  </div>
+</div>
+
+<script>
+  const log = document.getElementById('chatLog');
+  if (log) log.scrollTop = log.scrollHeight;
+</script>
+{% endblock %}

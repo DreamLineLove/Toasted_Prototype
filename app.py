@@ -35,10 +35,17 @@ def ensure_db_schema():
         cur = conn.cursor()
         cur.execute("SELECT sql FROM sqlite_master WHERE type='table' AND name='user'")
         row = cur.fetchone()
-        conn.close()
         if row and "UNIQUE (username)" in row[0]:
+            conn.close()
             db.drop_all()
             db.create_all()
+            return
+        cur.execute("PRAGMA table_info(delivery_schedule)")
+        cols = [r[1] for r in cur.fetchall()]
+        if cols and "transport" not in cols:
+            cur.execute("ALTER TABLE delivery_schedule ADD COLUMN transport VARCHAR(120)")
+            conn.commit()
+        conn.close()
     except sqlite3.Error:
         pass
 
@@ -119,9 +126,18 @@ class DeliverySchedule(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     destination = db.Column(db.String(120), nullable=False)
     scheduled_date = db.Column(db.Date, nullable=False)
+    transport = db.Column(db.String(120), nullable=True)
     status = db.Column(db.String(40), nullable=False, default="Scheduled")
     manager = db.Column(db.String(80), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+
+class ChatMessage(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    sender = db.Column(db.String(80), nullable=False)
+    sender_role = db.Column(db.String(40), nullable=False)
+    message = db.Column(db.String(1000), nullable=False)
+    sent_at = db.Column(db.DateTime, default=datetime.utcnow)
 
 
 with app.app_context():
@@ -177,8 +193,6 @@ ROLE_ACTIONS = {
     ],
     "Production Planner": [
         {"label": "Demand forecasting", "endpoint": "forecast"},
-        {"label": "Review inventory", "endpoint": "inventory_manage"},
-        {"label": "Audit review", "endpoint": "audit"},
     ],
     "Production Manager": [
         {"label": "Create production batch", "endpoint": "create_batch"},
@@ -187,8 +201,6 @@ ROLE_ACTIONS = {
     ],
     "Regulatory Affairs": [
         {"label": "Release production batch", "endpoint": "release_batch"},
-        {"label": "Review audit trail", "endpoint": "audit"},
-        {"label": "View formulations", "endpoint": "formulations"},
     ],
     "Warehouse Staff": [
         {"label": "Manage inventory", "endpoint": "inventory_manage"},
@@ -197,14 +209,17 @@ ROLE_ACTIONS = {
     "Sales Staff": [
         {"label": "Approve customer orders", "endpoint": "sales_orders"},
         {"label": "View customer portal", "endpoint": "customer_portal"},
+        {"label": "Customer chat", "endpoint": "chat"},
     ],
     "Customer": [
         {"label": "Browse availability", "endpoint": "customer_portal"},
         {"label": "Track delivery status", "endpoint": "track_delivery"},
+        {"label": "Contact sales", "endpoint": "chat"},
     ],
     "Delivery Manager": [
         {"label": "Schedule delivery", "endpoint": "delivery_schedule"},
-        {"label": "Reschedule transport", "endpoint": "delivery_schedule"},
+        {"label": "Reschedule delivery", "endpoint": "delivery_schedule"},
+        {"label": "Assign transport", "endpoint": "delivery_schedule"},
     ],
 }
 
@@ -293,15 +308,13 @@ def logout():
 
 
 @app.route("/formulations")
-@require_roles("Researcher", "Production Planner", "Production Manager", "Regulatory Affairs", "Warehouse Staff", "Sales Staff")
+@require_roles("Researcher")
 def formulations():
     user = current_user()
     records = Formulation.query.order_by(Formulation.created_at.desc()).all()
     view_records = []
     for record in records:
-        payload = None
-        if user.role in ["Researcher", "Production Planner", "Production Manager", "Regulatory Affairs"]:
-            payload = decrypt_payload(record.encrypted_payload, record.nonce)
+        payload = decrypt_payload(record.encrypted_payload, record.nonce)
         view_records.append({
             "id": record.id,
             "name": record.name,
@@ -313,7 +326,7 @@ def formulations():
 
 
 @app.route("/formulations/new", methods=["GET", "POST"])
-@require_roles("Researcher", "Production Manager")
+@require_roles("Researcher")
 def create_formulation():
     user = current_user()
     if request.method == "POST":
@@ -333,7 +346,7 @@ def create_formulation():
 
 
 @app.route("/inventory_manage", methods=["GET", "POST"])
-@require_roles("Warehouse Staff", "Production Planner", "Production Manager", "Regulatory Affairs")
+@require_roles("Warehouse Staff", "Production Manager")
 def inventory_manage():
     user = current_user()
     if request.method == "POST":
@@ -398,7 +411,7 @@ def inventory_reserve():
 
 
 @app.route("/research_search", methods=["GET", "POST"])
-@require_roles("Researcher", "Production Planner")
+@require_roles("Researcher")
 def research_search():
     user = current_user()
     query = request.form.get("query", "")
@@ -406,9 +419,7 @@ def research_search():
     if request.method == "POST" and query:
         formulations = Formulation.query.filter(Formulation.name.ilike(f"%{query}%")).all()
         for formulation in formulations:
-            payload = None
-            if user.role in ["Researcher", "Production Planner"]:
-                payload = decrypt_payload(formulation.encrypted_payload, formulation.nonce)
+            payload = decrypt_payload(formulation.encrypted_payload, formulation.nonce)
             results.append({
                 "name": formulation.name,
                 "created_by": formulation.created_by,
@@ -543,6 +554,81 @@ def track_delivery():
     user = current_user()
     orders = CustomerOrder.query.filter_by(customer_name=user.username).order_by(CustomerOrder.created_at.desc()).all()
     return render_template("track_delivery.html", user=user, orders=orders)
+
+
+@app.route("/delivery_schedule", methods=["GET", "POST"])
+@require_roles("Delivery Manager")
+def delivery_schedule():
+    user = current_user()
+    if request.method == "POST":
+        action = request.form.get("action", "schedule")
+        if action == "schedule":
+            destination = request.form.get("destination", "").strip()
+            scheduled_date_str = request.form.get("scheduled_date", "")
+            transport = request.form.get("transport", "").strip()
+            if not destination or not scheduled_date_str:
+                flash("Destination and scheduled date are required.", "warning")
+                return redirect(url_for("delivery_schedule"))
+            from datetime import date
+            scheduled_date = date.fromisoformat(scheduled_date_str)
+            schedule = DeliverySchedule(destination=destination, scheduled_date=scheduled_date,
+                                        transport=transport or None, manager=user.username)
+            db.session.add(schedule)
+            db.session.commit()
+            log_event(user.username, user.role, "Scheduled delivery", destination,
+                      f"date={scheduled_date_str}, transport={transport}")
+            flash("Delivery scheduled.", "success")
+        elif action == "reschedule":
+            delivery_id = request.form.get("delivery_id")
+            new_date_str = request.form.get("new_date", "")
+            if not delivery_id or not new_date_str:
+                flash("Delivery ID and new date are required.", "warning")
+                return redirect(url_for("delivery_schedule"))
+            schedule = DeliverySchedule.query.get(delivery_id)
+            if not schedule:
+                flash("Delivery not found.", "warning")
+                return redirect(url_for("delivery_schedule"))
+            from datetime import date
+            schedule.scheduled_date = date.fromisoformat(new_date_str)
+            db.session.commit()
+            log_event(user.username, user.role, "Rescheduled delivery", schedule.destination,
+                      f"new_date={new_date_str}")
+            flash("Delivery rescheduled.", "success")
+        elif action == "assign_transport":
+            delivery_id = request.form.get("delivery_id")
+            transport = request.form.get("transport", "").strip()
+            if not delivery_id or not transport:
+                flash("Delivery ID and transport vehicle are required.", "warning")
+                return redirect(url_for("delivery_schedule"))
+            schedule = DeliverySchedule.query.get(delivery_id)
+            if not schedule:
+                flash("Delivery not found.", "warning")
+                return redirect(url_for("delivery_schedule"))
+            schedule.transport = transport
+            db.session.commit()
+            log_event(user.username, user.role, "Assigned transport", schedule.destination,
+                      f"transport={transport}")
+            flash("Transport assigned.", "success")
+        return redirect(url_for("delivery_schedule"))
+    schedules = DeliverySchedule.query.order_by(DeliverySchedule.scheduled_date).all()
+    return render_template("delivery_schedule.html", user=user, schedules=schedules)
+
+
+@app.route("/chat", methods=["GET", "POST"])
+@require_roles("Customer", "Sales Staff")
+def chat():
+    user = current_user()
+    if request.method == "POST":
+        message = request.form.get("message", "").strip()
+        if not message:
+            flash("Message cannot be empty.", "warning")
+            return redirect(url_for("chat"))
+        msg = ChatMessage(sender=user.username, sender_role=user.role, message=message)
+        db.session.add(msg)
+        db.session.commit()
+        return redirect(url_for("chat"))
+    messages = ChatMessage.query.order_by(ChatMessage.sent_at.asc()).all()
+    return render_template("chat.html", user=user, messages=messages)
 
 
 if __name__ == "__main__":

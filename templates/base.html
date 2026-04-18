@@ -92,7 +92,7 @@
       <div class="collapse navbar-collapse" id="mainNav">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           {% if user %}
-            {% if user.role in ['Researcher', 'Production Planner', 'Production Manager', 'Regulatory Affairs', 'Warehouse Staff', 'Sales Staff'] %}
+            {% if user.role == 'Researcher' %}
             <li class="nav-item">
               <a class="nav-link" href="{{ url_for('formulations') }}">
                 <i class="bi bi-flask me-1"></i> {{ _("Formulations") }}
@@ -100,7 +100,7 @@
             </li>
             {% endif %}
 
-            {% if user.role in ['Production Planner', 'Production Manager', 'Regulatory Affairs', 'Warehouse Staff'] %}
+            {% if user.role in ['Warehouse Staff', 'Production Manager'] %}
             <li class="nav-item">
               <a class="nav-link" href="{{ url_for('inventory_manage') }}">
                 <i class="bi bi-box-seam me-1"></i> {{ _("Inventory") }}
@@ -108,10 +108,10 @@
             </li>
             {% endif %}
 
-            {% if user.role in ['Regulatory Affairs', 'Production Planner', 'Production Manager'] %}
+            {% if user.role in ['Customer', 'Sales Staff'] %}
             <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('audit') }}">
-                <i class="bi bi-journal-text me-1"></i> {{ _("Audit Trail") }}
+              <a class="nav-link" href="{{ url_for('chat') }}">
+                <i class="bi bi-chat-dots me-1"></i> {{ _("Chat") }}
               </a>
             </li>
             {% endif %}

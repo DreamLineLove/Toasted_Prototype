@@ -64,7 +64,7 @@
       <p class="text-muted small mb-0">{{ _("Authorized access to active pharmaceutical ingredients (API) blueprints.") }}</p>
     </div>
     
-    {% if user.role in ['Researcher', 'Production Manager'] %}
+    {% if user.role == 'Researcher' %}
     <a class="btn btn-primary d-flex align-items-center shadow-sm px-4 rounded-pill" href="{{ url_for('create_formulation') }}">
       <i class="bi bi-plus-lg me-2"></i> {{ _("New Formulation") }}
     </a>

@@ -65,8 +65,9 @@
         </div>
 
         <form method="post">
+          <input type="hidden" name="action" value="schedule">
           <span class="form-section-title">Shipping Details</span>
-          
+
           <div class="mb-3">
             <label class="form-label fw-medium small">Destination Hub</label>
             <div class="input-group">
@@ -75,11 +76,19 @@
             </div>
           </div>
 
-          <div class="mb-4">
+          <div class="mb-3">
             <label class="form-label fw-medium small">Expected Arrival Date</label>
             <div class="input-group">
               <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-clock"></i></span>
               <input type="date" class="form-control border-start-0 ps-0" name="scheduled_date" required />
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <label class="form-label fw-medium small">Transport Vehicle</label>
+            <div class="input-group">
+              <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-truck"></i></span>
+              <input class="form-control border-start-0 ps-0" name="transport" placeholder="e.g. Truck TH-4821" />
             </div>
           </div>
 
@@ -103,9 +112,10 @@
             <tr>
               <th class="ps-4">Destination</th>
               <th>Departure Date</th>
+              <th>Transport</th>
               <th>Status</th>
               <th>Manager</th>
-              <th class="text-end pe-4">Track</th>
+              <th class="text-end pe-4">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -125,6 +135,15 @@
                 </span>
               </td>
               <td>
+                <div class="small text-muted fw-medium">
+                  {% if schedule.transport %}
+                    <i class="bi bi-truck me-1"></i>{{ schedule.transport }}
+                  {% else %}
+                    <span class="text-secondary fst-italic">Unassigned</span>
+                  {% endif %}
+                </div>
+              </td>
+              <td>
                 <span class="status-tag border text-uppercase bg-light">
                    {{ schedule.status }}
                 </span>
@@ -133,13 +152,34 @@
                 <div class="small text-muted fw-medium">{{ schedule.manager }}</div>
               </td>
               <td class="text-end pe-4">
-                <a href="#" class="btn btn-sm btn-outline-primary rounded-pill px-3">Details</a>
+                {% if user.role == 'Delivery Manager' %}
+                <div class="d-flex flex-column gap-2 align-items-end">
+                  <form method="post" class="d-flex gap-1 align-items-center">
+                    <input type="hidden" name="action" value="reschedule">
+                    <input type="hidden" name="delivery_id" value="{{ schedule.id }}">
+                    <input type="date" class="form-control form-control-sm" name="new_date" required style="width:140px;">
+                    <button class="btn btn-sm btn-outline-secondary text-nowrap">
+                      <i class="bi bi-calendar-event me-1"></i>Reschedule
+                    </button>
+                  </form>
+                  <form method="post" class="d-flex gap-1 align-items-center">
+                    <input type="hidden" name="action" value="assign_transport">
+                    <input type="hidden" name="delivery_id" value="{{ schedule.id }}">
+                    <input class="form-control form-control-sm" name="transport" placeholder="Vehicle / Carrier" required style="width:140px;">
+                    <button class="btn btn-sm btn-outline-primary text-nowrap">
+                      <i class="bi bi-truck me-1"></i>Assign
+                    </button>
+                  </form>
+                </div>
+                {% else %}
+                <span class="text-muted small">—</span>
+                {% endif %}
               </td>
             </tr>
             {% endfor %}
             {% if not schedules %}
             <tr>
-              <td colspan="5" class="text-center py-5">
+              <td colspan="6" class="text-center py-5">
                 <i class="bi bi-truck-flatbed d-block h1 text-light mb-3"></i>
                 <p class="text-muted">No scheduled deliveries on the horizon.</p>
               </td>
