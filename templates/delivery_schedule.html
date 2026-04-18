@@ -69,6 +69,19 @@
           <span class="form-section-title">Shipping Details</span>
 
           <div class="mb-3">
+            <label class="form-label fw-medium small">Customer Order</label>
+            <select class="form-select" name="order_id" required>
+              <option value="">— Select an approved order —</option>
+              {% for o in approved_orders %}
+              <option value="{{ o.id }}">#{{ o.id }} · {{ o.customer_name }} · {{ o.drug_name }} ({{ o.quantity }} units)</option>
+              {% endfor %}
+            </select>
+            {% if not approved_orders %}
+            <div class="form-text text-warning"><i class="bi bi-exclamation-triangle me-1"></i>No approved orders available.</div>
+            {% endif %}
+          </div>
+
+          <div class="mb-3">
             <label class="form-label fw-medium small">Destination Hub</label>
             <div class="input-group">
               <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-geo-alt"></i></span>
@@ -111,6 +124,7 @@
           <thead>
             <tr>
               <th class="ps-4">Destination</th>
+              <th>Customer Order</th>
               <th>Departure Date</th>
               <th>Transport</th>
               <th>Status</th>
@@ -128,6 +142,16 @@
                   </div>
                   <span class="fw-semibold text-dark">{{ schedule.destination }}</span>
                 </div>
+              </td>
+              <td>
+                {% if schedule.order %}
+                <div class="small">
+                  <div class="fw-medium text-dark">{{ schedule.order.customer_name }}</div>
+                  <div class="text-muted">{{ schedule.order.drug_name }} &times; {{ schedule.order.quantity }}</div>
+                </div>
+                {% else %}
+                <span class="text-muted fst-italic small">—</span>
+                {% endif %}
               </td>
               <td>
                 <span class="date-badge">

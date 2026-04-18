@@ -45,6 +45,9 @@ def ensure_db_schema():
         if cols and "transport" not in cols:
             cur.execute("ALTER TABLE delivery_schedule ADD COLUMN transport VARCHAR(120)")
             conn.commit()
+        if cols and "order_id" not in cols:
+            cur.execute("ALTER TABLE delivery_schedule ADD COLUMN order_id INTEGER REFERENCES customer_order(id)")
+            conn.commit()
         conn.close()
     except sqlite3.Error:
         pass
@@ -124,6 +127,8 @@ class CustomerOrder(db.Model):
 
 class DeliverySchedule(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    order_id = db.Column(db.Integer, db.ForeignKey('customer_order.id'), nullable=True)
+    order = db.relationship('CustomerOrder', backref=db.backref('delivery', uselist=False))
     destination = db.Column(db.String(120), nullable=False)
     scheduled_date = db.Column(db.Date, nullable=False)
     transport = db.Column(db.String(120), nullable=True)
@@ -558,20 +563,27 @@ def delivery_schedule():
     if request.method == "POST":
         action = request.form.get("action", "schedule")
         if action == "schedule":
+            order_id = request.form.get("order_id", "").strip()
             destination = request.form.get("destination", "").strip()
             scheduled_date_str = request.form.get("scheduled_date", "")
             transport = request.form.get("transport", "").strip()
-            if not destination or not scheduled_date_str:
-                flash("Destination and scheduled date are required.", "warning")
+            if not order_id or not destination or not scheduled_date_str:
+                flash("Order, destination, and scheduled date are required.", "warning")
                 return redirect(url_for("delivery_schedule"))
             from datetime import date
             scheduled_date = date.fromisoformat(scheduled_date_str)
-            schedule = DeliverySchedule(destination=destination, scheduled_date=scheduled_date,
+            order = CustomerOrder.query.get(order_id)
+            if not order:
+                flash("Selected order not found.", "warning")
+                return redirect(url_for("delivery_schedule"))
+            schedule = DeliverySchedule(order_id=order.id, destination=destination,
+                                        scheduled_date=scheduled_date,
                                         transport=transport or None, manager=user.username)
             db.session.add(schedule)
+            order.status = "Scheduled"
             db.session.commit()
             log_event(user.username, user.role, "Scheduled delivery", destination,
-                      f"date={scheduled_date_str}, transport={transport}")
+                      f"order_id={order_id}, date={scheduled_date_str}, transport={transport}")
             flash("Delivery scheduled.", "success")
         elif action == "reschedule":
             delivery_id = request.form.get("delivery_id")
@@ -606,7 +618,8 @@ def delivery_schedule():
             flash("Transport assigned.", "success")
         return redirect(url_for("delivery_schedule"))
     schedules = DeliverySchedule.query.order_by(DeliverySchedule.scheduled_date).all()
-    return render_template("delivery_schedule.html", user=user, schedules=schedules)
+    approved_orders = CustomerOrder.query.filter_by(status="Approved").order_by(CustomerOrder.created_at.desc()).all()
+    return render_template("delivery_schedule.html", user=user, schedules=schedules, approved_orders=approved_orders)
 
 
 @app.route("/chat", methods=["GET", "POST"])

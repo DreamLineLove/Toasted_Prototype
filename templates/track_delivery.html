@@ -75,6 +75,8 @@
                 <th>Quantity</th>
                 <th>Order Date</th>
                 <th>Status</th>
+                <th>Scheduled Date</th>
+                <th>Transport</th>
               </tr>
             </thead>
             <tbody>
@@ -97,19 +99,36 @@
                   </span>
                 </td>
                 <td>
-                  <span class="status-tag 
+                  <span class="status-tag
                     {% if order.status == 'Delivered' %}bg-success text-white
                     {% elif order.status == 'Shipped' %}bg-info text-white
+                    {% elif order.status == 'Scheduled' %}bg-primary text-white
                     {% elif order.status == 'Approved' %}bg-warning text-dark
                     {% else %}bg-secondary text-white{% endif %}">
                      {{ order.status }}
                   </span>
                 </td>
+                <td>
+                  {% if order.delivery %}
+                  <span class="date-badge">
+                    <i class="bi bi-calendar3 me-1"></i>{{ order.delivery.scheduled_date.strftime('%Y-%m-%d') }}
+                  </span>
+                  {% else %}
+                  <span class="text-muted small fst-italic">Not scheduled</span>
+                  {% endif %}
+                </td>
+                <td>
+                  {% if order.delivery and order.delivery.transport %}
+                  <span class="small fw-medium"><i class="bi bi-truck me-1"></i>{{ order.delivery.transport }}</span>
+                  {% else %}
+                  <span class="text-muted small fst-italic">—</span>
+                  {% endif %}
+                </td>
               </tr>
               {% endfor %}
               {% if not orders %}
               <tr>
-                <td colspan="4" class="text-center py-5">
+                <td colspan="6" class="text-center py-5">
                   <i class="bi bi-cart-x d-block h1 text-light mb-3"></i>
                   <p class="text-muted">No orders found.</p>
                 </td>
