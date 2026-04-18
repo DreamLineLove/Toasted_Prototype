@@ -204,10 +204,6 @@ ROLE_ACTIONS = {
         {"label": "View production batches", "endpoint": "view_batches"},
         {"label": "Release production batch", "endpoint": "release_batch"},
     ],
-    "Warehouse Staff": [
-        {"label": "Manage inventory", "endpoint": "inventory_manage"},
-        {"label": "Reserve stock", "endpoint": "inventory_reserve"},
-    ],
     "Sales Staff": [
         {"label": "Approve customer orders", "endpoint": "sales_orders"},
         {"label": "View customer portal", "endpoint": "customer_portal"},
