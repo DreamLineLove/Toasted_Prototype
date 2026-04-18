@@ -108,6 +108,14 @@
             </li>
             {% endif %}
 
+            {% if user.role in ['Production Manager', 'Regulatory Affairs'] %}
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('view_batches') }}">
+                <i class="bi bi-layers me-1"></i> {{ _("Batches") }}
+              </a>
+            </li>
+            {% endif %}
+
             {% if user.role in ['Customer', 'Sales Staff'] %}
             <li class="nav-item">
               <a class="nav-link" href="{{ url_for('chat') }}">

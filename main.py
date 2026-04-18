@@ -196,10 +196,12 @@ ROLE_ACTIONS = {
     ],
     "Production Manager": [
         {"label": "Create production batch", "endpoint": "create_batch"},
+        {"label": "View production batches", "endpoint": "view_batches"},
         {"label": "Request raw materials", "endpoint": "raw_materials"},
         {"label": "Review inventory", "endpoint": "inventory_manage"},
     ],
     "Regulatory Affairs": [
+        {"label": "View production batches", "endpoint": "view_batches"},
         {"label": "Release production batch", "endpoint": "release_batch"},
     ],
     "Warehouse Staff": [
@@ -629,6 +631,14 @@ def chat():
         return redirect(url_for("chat"))
     messages = ChatMessage.query.order_by(ChatMessage.sent_at.asc()).all()
     return render_template("chat.html", user=user, messages=messages)
+
+
+@app.route("/view_batches")
+@require_roles("Production Manager", "Regulatory Affairs")
+def view_batches():
+    user = current_user()
+    batches = ProductionBatch.query.order_by(ProductionBatch.created_at.desc()).all()
+    return render_template("view_batches.html", user=user, batches=batches)
 
 
 if __name__ == "__main__":
