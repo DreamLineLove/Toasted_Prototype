@@ -241,7 +241,6 @@ ROLE_ACTIONS = {
     "Warehouse Staff": [
         {"label": "Review material requests", "endpoint": "material_requests"},
         {"label": "Manage inventory", "endpoint": "inventory_manage"},
-        {"label": "Reserve stock", "endpoint": "inventory_reserve"},
     ],
     "Sales Staff": [
         {"label": "Approve customer orders", "endpoint": "sales_orders"},
