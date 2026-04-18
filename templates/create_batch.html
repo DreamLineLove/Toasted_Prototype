@@ -53,6 +53,19 @@
         
         <form method="post">
           <div class="mb-3">
+            <label class="form-label fw-semibold text-muted small text-uppercase">Formulation</label>
+            <div class="input-group">
+              <span class="input-group-text bg-light border-end-0 text-muted"><i class="bi bi-flask"></i></span>
+              <select class="form-select border-start-0" name="formulation_id">
+                <option value="">— No formulation linked —</option>
+                {% for f in formulations %}
+                <option value="{{ f.id }}">{{ f.name }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+
+          <div class="mb-3">
             <label class="form-label fw-semibold text-muted small text-uppercase">Batch Identifier</label>
             <div class="input-group">
               <span class="input-group-text bg-light border-end-0 text-muted"><i class="bi bi-tag"></i></span>
@@ -88,9 +101,9 @@
             <tr>
               <th class="ps-4">Batch ID</th>
               <th>Product</th>
+              <th>Formulation</th>
               <th>Status</th>
               <th>Authorized By</th>
-              <th class="text-end pe-4">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -99,7 +112,14 @@
               <td class="ps-4 fw-bold text-primary">{{ batch.batch_name }}</td>
               <td>{{ batch.drug_name }}</td>
               <td>
-                <span class="status-pill {% if batch.status|lower == 'active' %}status-active{% else %}status-pending{% endif %}">
+                {% if batch.formulation %}
+                <span class="small text-primary"><i class="bi bi-flask me-1"></i>{{ batch.formulation.name }}</span>
+                {% else %}
+                <span class="small text-muted fst-italic">—</span>
+                {% endif %}
+              </td>
+              <td>
+                <span class="status-pill {% if batch.status == 'Released' %}status-active{% else %}status-pending{% endif %}">
                   {{ batch.status }}
                 </span>
               </td>
@@ -108,14 +128,11 @@
                   <i class="bi bi-person me-1"></i> {{ batch.created_by }}
                 </div>
               </td>
-              <td class="text-end pe-4">
-                <button class="btn btn-light btn-sm rounded-circle"><i class="bi bi-eye"></i></button>
-              </td>
             </tr>
             {% endfor %}
             {% if not batches %}
             <tr>
-              <td colspan="5" class="text-center py-5 text-muted italic">
+              <td colspan="5" class="text-center py-5 text-muted fst-italic">
                 <i class="bi bi-inbox d-block h1 opacity-25"></i>
                 No active production batches found.
               </td>

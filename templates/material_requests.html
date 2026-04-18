@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+  .req-card { border: none; border-radius: 16px; }
+  .req-table thead th {
+    background-color: #f1f5f9;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #64748b;
+    border: none;
+    padding: 1rem;
+  }
+  .status-pill {
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 0.3rem 0.7rem;
+    border-radius: 50px;
+    text-transform: uppercase;
+  }
+  .status-requested { background: #fff7ed; color: #c2410c; border: 1px solid #ffedd5; }
+  .status-approved  { background: #f0fdf4; color: #166534; border: 1px solid #dcfce7; }
+  .status-rejected  { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
+</style>
+
+<div class="animate-fade-in">
+  <div class="d-flex align-items-center mb-4">
+    <div class="bg-warning bg-opacity-10 text-warning p-3 rounded-3 me-3">
+      <i class="bi bi-box-seam h3 mb-0"></i>
+    </div>
+    <div>
+      <h2 class="fw-bold mb-1">Material Requests</h2>
+      <p class="text-muted small mb-0">Review and approve raw material requests from Production. Approving deducts from inventory.</p>
+    </div>
+  </div>
+
+  <div class="card shadow-sm req-card">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle req-table mb-0">
+        <thead>
+          <tr>
+            <th class="ps-4">Material</th>
+            <th>Linked Batch</th>
+            <th>Quantity</th>
+            <th>Inventory Available</th>
+            <th>Requested By</th>
+            <th>Status</th>
+            <th class="text-end pe-4">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for req in requests %}
+          {% set inv = req.material_name | inventory_available %}
+          <tr>
+            <td class="ps-4">
+              <div class="fw-bold text-dark">{{ req.material_name }}</div>
+              <div class="small text-muted">#REQ-{{ req.id }}</div>
+            </td>
+            <td>
+              {% if req.batch %}
+              <span class="small text-primary"><i class="bi bi-layers me-1"></i>{{ req.batch.batch_name }}</span>
+              <div class="small text-muted">{{ req.batch.drug_name }}</div>
+              {% else %}
+              <span class="small text-muted fst-italic">—</span>
+              {% endif %}
+            </td>
+            <td class="fw-medium">{{ req.quantity }}</td>
+            <td>
+              {% set item = namespace(available=None) %}
+              {% for i in inventory_items %}
+                {% if i.drug_name == req.material_name %}
+                  {% set item.available = i.quantity - i.reserved %}
+                {% endif %}
+              {% endfor %}
+              {% if item.available is not none %}
+                <span class="fw-medium {% if item.available >= req.quantity %}text-success{% else %}text-danger{% endif %}">
+                  {{ item.available }} units
+                </span>
+              {% else %}
+                <span class="text-muted small fst-italic">Not in inventory</span>
+              {% endif %}
+            </td>
+            <td class="small text-muted">{{ req.requested_by }}</td>
+            <td>
+              <span class="status-pill
+                {% if req.status == 'Approved' %}status-approved
+                {% elif req.status == 'Rejected' %}status-rejected
+                {% else %}status-requested{% endif %}">
+                {{ req.status }}
+              </span>
+            </td>
+            <td class="text-end pe-4">
+              {% if req.status == 'Requested' %}
+              <div class="d-flex gap-2 justify-content-end">
+                <form method="post">
+                  <input type="hidden" name="request_id" value="{{ req.id }}">
+                  <input type="hidden" name="action" value="Approve">
+                  <button class="btn btn-sm btn-success rounded-pill px-3">
+                    <i class="bi bi-check-lg me-1"></i>Approve
+                  </button>
+                </form>
+                <form method="post">
+                  <input type="hidden" name="request_id" value="{{ req.id }}">
+                  <input type="hidden" name="action" value="Reject">
+                  <button class="btn btn-sm btn-outline-danger rounded-pill px-3">
+                    <i class="bi bi-x-lg me-1"></i>Reject
+                  </button>
+                </form>
+              </div>
+              {% else %}
+              <span class="text-muted small">—</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+          {% if not requests %}
+          <tr>
+            <td colspan="7" class="text-center py-5 text-muted">
+              <i class="bi bi-inbox d-block h1 opacity-25 mb-3"></i>
+              No material requests to review.
+            </td>
+          </tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="mt-4">
+    <a class="btn btn-link text-decoration-none text-muted p-0" href="{{ url_for('home') }}">
+      <i class="bi bi-arrow-left me-1"></i> Back to Dashboard
+    </a>
+  </div>
+</div>
+{% endblock %}

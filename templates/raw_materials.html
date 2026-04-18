@@ -67,6 +67,19 @@
 
         <form method="post">
           <div class="mb-3">
+            <label class="form-label form-label-header">Link to Production Batch</label>
+            <div class="input-group material-input-group">
+              <span class="input-group-text"><i class="bi bi-layers"></i></span>
+              <select class="form-select" name="batch_id">
+                <option value="">— No batch linked —</option>
+                {% for b in batches %}
+                <option value="{{ b.id }}">{{ b.batch_name }} ({{ b.drug_name }})</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+
+          <div class="mb-3">
             <label class="form-label form-label-header">Raw Material Name</label>
             <div class="input-group material-input-group">
               <span class="input-group-text"><i class="bi bi-box-seam"></i></span>
@@ -100,6 +113,7 @@
           <thead>
             <tr>
               <th class="ps-4">Material</th>
+              <th>Batch</th>
               <th>Quantity</th>
               <th>Status</th>
               <th class="pe-4">Requested By</th>
@@ -111,6 +125,13 @@
               <td class="ps-4">
                 <div class="fw-bold text-dark">{{ request.material_name }}</div>
                 <div class="small text-muted">ID: #REQ-{{ loop.index + 200 }}</div>
+              </td>
+              <td>
+                {% if request.batch %}
+                <span class="small text-primary"><i class="bi bi-layers me-1"></i>{{ request.batch.batch_name }}</span>
+                {% else %}
+                <span class="small text-muted fst-italic">—</span>
+                {% endif %}
               </td>
               <td>
                 <span class="qty-display">{{ "{:,}".format(request.quantity|int) if request.quantity|int else request.quantity }}</span>

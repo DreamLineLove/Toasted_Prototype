@@ -77,6 +77,8 @@
             <tr>
               <th class="ps-4">Batch Identifier</th>
               <th>Pharmaceutical Product</th>
+              <th>Formulation</th>
+              <th>Materials</th>
               <th>Current Status</th>
               <th class="text-end pe-4">Final Action</th>
             </tr>
@@ -95,6 +97,24 @@
               <td>
                 <div class="fw-medium text-dark">{{ batch.drug_name }}</div>
                 <div class="small text-muted">Post-Production Review</div>
+              </td>
+              <td>
+                {% if batch.formulation %}
+                <span class="small text-primary"><i class="bi bi-flask me-1"></i>{{ batch.formulation.name }}</span>
+                {% else %}
+                <span class="small text-muted fst-italic">Not linked</span>
+                {% endif %}
+              </td>
+              <td>
+                {% set total = batch.material_requests|length %}
+                {% set approved = batch.material_requests|selectattr('status','equalto','Approved')|list|length %}
+                {% if total == 0 %}
+                <span class="small text-muted fst-italic">None</span>
+                {% else %}
+                <span class="small fw-medium {% if approved == total %}text-success{% else %}text-warning{% endif %}">
+                  <i class="bi bi-box-seam me-1"></i>{{ approved }}/{{ total }} approved
+                </span>
+                {% endif %}
               </td>
               <td>
                 <span class="status-badge {% if batch.status|lower == 'released' %}status-released{% else %}status-pending{% endif %}">
@@ -120,7 +140,7 @@
             {% endfor %}
             {% if not batches %}
             <tr>
-              <td colspan="4" class="text-center py-5">
+              <td colspan="6" class="text-center py-5">
                 <div class="py-4">
                   <i class="bi bi-clipboard2-check h1 text-light"></i>
                   <p class="text-muted">No production batches are currently awaiting release.</p>

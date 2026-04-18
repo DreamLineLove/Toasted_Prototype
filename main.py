@@ -48,6 +48,16 @@ def ensure_db_schema():
         if cols and "order_id" not in cols:
             cur.execute("ALTER TABLE delivery_schedule ADD COLUMN order_id INTEGER REFERENCES customer_order(id)")
             conn.commit()
+        cur.execute("PRAGMA table_info(production_batch)")
+        pb_cols = [r[1] for r in cur.fetchall()]
+        if pb_cols and "formulation_id" not in pb_cols:
+            cur.execute("ALTER TABLE production_batch ADD COLUMN formulation_id INTEGER REFERENCES formulation(id)")
+            conn.commit()
+        cur.execute("PRAGMA table_info(raw_material_request)")
+        rmr_cols = [r[1] for r in cur.fetchall()]
+        if rmr_cols and "batch_id" not in rmr_cols:
+            cur.execute("ALTER TABLE raw_material_request ADD COLUMN batch_id INTEGER REFERENCES production_batch(id)")
+            conn.commit()
         cur.execute("PRAGMA table_info(user)")
         user_cols = [r[1] for r in cur.fetchall()]
         for col, typedef in [
@@ -117,6 +127,8 @@ class ProductionBatch(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     batch_name = db.Column(db.String(120), nullable=False)
     drug_name = db.Column(db.String(120), nullable=False)
+    formulation_id = db.Column(db.Integer, db.ForeignKey('formulation.id'), nullable=True)
+    formulation = db.relationship('Formulation', backref=db.backref('batches', lazy=True))
     status = db.Column(db.String(40), nullable=False, default="Pending")
     created_by = db.Column(db.String(80), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
@@ -124,6 +136,8 @@ class ProductionBatch(db.Model):
 
 class RawMaterialRequest(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    batch_id = db.Column(db.Integer, db.ForeignKey('production_batch.id'), nullable=True)
+    batch = db.relationship('ProductionBatch', backref=db.backref('material_requests', lazy=True))
     material_name = db.Column(db.String(120), nullable=False)
     quantity = db.Column(db.Integer, nullable=False)
     status = db.Column(db.String(40), nullable=False, default="Requested")
@@ -223,6 +237,11 @@ ROLE_ACTIONS = {
     "Regulatory Affairs": [
         {"label": "View production batches", "endpoint": "view_batches"},
         {"label": "Release production batch", "endpoint": "release_batch"},
+    ],
+    "Warehouse Staff": [
+        {"label": "Review material requests", "endpoint": "material_requests"},
+        {"label": "Manage inventory", "endpoint": "inventory_manage"},
+        {"label": "Reserve stock", "endpoint": "inventory_reserve"},
     ],
     "Sales Staff": [
         {"label": "Approve customer orders", "endpoint": "sales_orders"},
@@ -483,17 +502,20 @@ def create_batch():
     if request.method == "POST":
         batch_name = request.form["batch_name"].strip()
         drug_name = request.form["drug_name"].strip()
+        formulation_id = request.form.get("formulation_id") or None
         if not batch_name or not drug_name:
             flash("Batch name and drug name are required.", "warning")
             return redirect(url_for("create_batch"))
-        batch = ProductionBatch(batch_name=batch_name, drug_name=drug_name, created_by=user.username)
+        batch = ProductionBatch(batch_name=batch_name, drug_name=drug_name,
+                                formulation_id=formulation_id, created_by=user.username)
         db.session.add(batch)
         db.session.commit()
         log_event(user.username, user.role, "Created production batch", batch_name)
         flash("Production batch created successfully.", "success")
         return redirect(url_for("create_batch"))
     batches = ProductionBatch.query.order_by(ProductionBatch.created_at.desc()).all()
-    return render_template("create_batch.html", user=user, batches=batches)
+    formulations = Formulation.query.order_by(Formulation.name).all()
+    return render_template("create_batch.html", user=user, batches=batches, formulations=formulations)
 
 
 @app.route("/raw_materials", methods=["GET", "POST"])
@@ -503,17 +525,20 @@ def raw_materials():
     if request.method == "POST":
         material_name = request.form["material_name"].strip()
         quantity = int(request.form.get("quantity", 0))
+        batch_id = request.form.get("batch_id") or None
         if not material_name or quantity <= 0:
             flash("Material name and positive quantity are required.", "warning")
             return redirect(url_for("raw_materials"))
-        request_item = RawMaterialRequest(material_name=material_name, quantity=quantity, requested_by=user.username)
+        request_item = RawMaterialRequest(material_name=material_name, quantity=quantity,
+                                          batch_id=batch_id, requested_by=user.username)
         db.session.add(request_item)
         db.session.commit()
         log_event(user.username, user.role, "Requested raw materials", material_name, f"qty={quantity}")
         flash("Raw material request submitted.", "success")
         return redirect(url_for("raw_materials"))
     requests = RawMaterialRequest.query.order_by(RawMaterialRequest.requested_at.desc()).all()
-    return render_template("raw_materials.html", user=user, requests=requests)
+    batches = ProductionBatch.query.filter_by(status="Pending").order_by(ProductionBatch.created_at.desc()).all()
+    return render_template("raw_materials.html", user=user, requests=requests, batches=batches)
 
 
 @app.route("/release_batch", methods=["GET", "POST"])
@@ -648,6 +673,38 @@ def delivery_schedule():
     schedules = DeliverySchedule.query.order_by(DeliverySchedule.scheduled_date).all()
     approved_orders = CustomerOrder.query.filter_by(status="Approved").order_by(CustomerOrder.created_at.desc()).all()
     return render_template("delivery_schedule.html", user=user, schedules=schedules, approved_orders=approved_orders)
+
+
+@app.route("/material_requests", methods=["GET", "POST"])
+@require_roles("Warehouse Staff")
+def material_requests():
+    user = current_user()
+    if request.method == "POST":
+        request_id = request.form.get("request_id")
+        action = request.form.get("action")
+        req = RawMaterialRequest.query.get(request_id)
+        if req and req.status == "Requested" and action in ["Approve", "Reject"]:
+            if action == "Approve":
+                item = InventoryItem.query.filter_by(drug_name=req.material_name).first()
+                if item and (item.quantity - item.reserved) >= req.quantity:
+                    item.quantity -= req.quantity
+                    item.updated_by = user.username
+                    item.updated_at = datetime.utcnow()
+                    req.status = "Approved"
+                    db.session.commit()
+                    log_event(user.username, user.role, "Approved material request", req.material_name, f"qty={req.quantity}")
+                    flash(f"Approved — {req.quantity} units of {req.material_name} deducted from inventory.", "success")
+                else:
+                    flash(f"Insufficient inventory for {req.material_name}. Cannot approve.", "warning")
+            else:
+                req.status = "Rejected"
+                db.session.commit()
+                log_event(user.username, user.role, "Rejected material request", req.material_name)
+                flash("Request rejected.", "warning")
+        return redirect(url_for("material_requests"))
+    reqs = RawMaterialRequest.query.order_by(RawMaterialRequest.requested_at.desc()).all()
+    inventory_items = InventoryItem.query.all()
+    return render_template("material_requests.html", user=user, requests=reqs, inventory_items=inventory_items)
 
 
 @app.route("/profile", methods=["GET", "POST"])
