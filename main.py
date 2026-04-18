@@ -229,7 +229,7 @@ ROLE_ACTIONS = {
         {"label": "Customer chat", "endpoint": "chat"},
     ],
     "Customer": [
-        {"label": "Browse availability", "endpoint": "customer_portal"},
+        {"label": "Place order", "endpoint": "customer_portal"},
         {"label": "Track delivery status", "endpoint": "track_delivery"},
         {"label": "Contact sales", "endpoint": "chat"},
         {"label": "Edit registration details", "endpoint": "profile"},
